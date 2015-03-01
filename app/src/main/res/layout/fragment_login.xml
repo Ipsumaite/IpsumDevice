@@ -1,0 +1,41 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" tools:context="com.ar.ipsum.ipsumapp.LoginFragment"
+    android:focusableInTouchMode="true"
+    android:focusable="true">
+
+    <!-- TODO: Update blank fragment layout -->
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textEmailAddress"
+        android:ems="10"
+        android:id="@+id/user"
+        android:layout_gravity="center"
+        android:layout_marginBottom="20dp"
+        android:hint="user@mail.com"
+        android:singleLine="true" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textPassword"
+        android:ems="10"
+        android:id="@+id/password"
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp"
+        android:password="true"
+        android:hint="password"
+        android:singleLine="true" />
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Start"
+        android:id="@+id/start_button"
+        android:layout_gravity="center_horizontal|bottom"
+        android:layout_marginBottom="20dp" />
+
+</FrameLayout>

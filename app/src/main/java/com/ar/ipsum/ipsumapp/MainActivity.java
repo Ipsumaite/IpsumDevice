@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.hardware.Camera;
@@ -14,17 +15,21 @@ import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
+import android.util.Patterns;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
+import com.ar.ipsum.ipsumapp.Utils.AsyncHttpPost;
 import com.ar.ipsum.ipsumapp.view.NavDrawerItem;
 import com.ar.ipsum.ipsumapp.view.NavDrawerListAdapter;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 
 public class MainActivity extends Activity  {
@@ -50,6 +55,11 @@ public class MainActivity extends Activity  {
     public SensorView sense;
     private Camera camera;
     private RajFragment raj= new RajFragment();
+    public static final String MyPREFERENCES = "MyPrefs" ;
+    public static final String name = "nameKey";
+    public static final String pass = "passwordKey";
+    public static final String tokenKey = "tokenKey";
+    SharedPreferences sharedpreferences;
     CameraManager mCameraManager;
 
     @Override
@@ -62,6 +72,7 @@ public class MainActivity extends Activity  {
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
 
+        login();
 
         //Initiate Camera
         //Camera c = getCameraInstance();
@@ -204,14 +215,15 @@ public class MainActivity extends Activity  {
                 break;
             case 2:
                 fragment = new PhotosFragment();
-                break;
+                break;*/
             case 3:
+                fragment = new LoginFragment();
+                break;
+            /*case 4:
                 fragment = new CommunityFragment();
                 break;
-            case 4:
-                fragment = new PagesFragment();
-                break;
-            case 5:
+
+             case 5:
                 fragment = new WhatsHotFragment();
                 break;
              */
@@ -258,6 +270,36 @@ public class MainActivity extends Activity  {
         super.onConfigurationChanged(newConfig);
         // Pass any configuration change to the drawer toggls
         mDrawerToggle.onConfigurationChanged(newConfig);
+    }
+
+    public void login(){
+        sharedpreferences=getSharedPreferences(MyPREFERENCES,
+                Context.MODE_PRIVATE);
+        String user1=sharedpreferences.getString(name,"");
+        String pass1=sharedpreferences.getString(pass,"");
+        String token1= sharedpreferences.getString(tokenKey,"");
+        if(!isDataValid(user1, pass1)) {
+            Toast.makeText(getBaseContext(),
+                    "Login or password is incorrect", Toast.LENGTH_SHORT).show();
+        } else {
+            // do login request
+            SharedPreferences.Editor editor = sharedpreferences.edit();
+            editor.putString(name, user1);
+            editor.putString(pass, pass1);
+            editor.commit();
+            HashMap<String, String> data = new HashMap<String, String>();
+            data.put("email", user1);
+            data.put("password", pass1);
+            AsyncHttpPost asyncHttpPost = new AsyncHttpPost(data, this);
+            asyncHttpPost.execute("http://ipsumapi.herokuapp.com/login");
+        }
+    }
+
+    public boolean isDataValid(String user, String pass) {
+
+        boolean isEmailValid = Patterns.EMAIL_ADDRESS.matcher(user).matches();
+        boolean isPasswordValid = !pass.isEmpty();
+        return isEmailValid && isPasswordValid;
     }
 
 
