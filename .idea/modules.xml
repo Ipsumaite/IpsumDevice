@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/IpsumApp.iml" filepath="$PROJECT_DIR$/IpsumApp.iml" />
+      <module fileurl="file://$PROJECT_DIR$/IpsumDevice.iml" filepath="$PROJECT_DIR$/IpsumDevice.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/rajawali/rajawali.iml" filepath="$PROJECT_DIR$/rajawali/rajawali.iml" />
     </modules>
