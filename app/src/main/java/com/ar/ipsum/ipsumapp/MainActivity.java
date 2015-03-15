@@ -1,5 +1,6 @@
 package com.ar.ipsum.ipsumapp;
 
+
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
@@ -212,10 +213,10 @@ public class MainActivity extends Activity  {
                 break;
             /*case 1:
                 fragment = new FindPeopleFragment();
-                break;
-            case 2:
-                fragment = new PhotosFragment();
                 break;*/
+            case 2:
+                fragment = new ChannelFragment();
+                break;
             case 3:
                 fragment = new LoginFragment();
                 break;

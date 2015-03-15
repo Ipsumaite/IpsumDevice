@@ -34,6 +34,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.ar.ipsum.ipsumapp.view.FloatingActionButton;
+import com.firebase.client.DataSnapshot;
+import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -76,6 +80,10 @@ public class RajFragment extends RajawaliFragment implements View.OnTouchListene
     CameraDevice mCamera;
     /** Our image capture session. */
     CameraCaptureSession mCaptureSession;
+
+    final String FIREBASEURL="https://glowing-heat-3433.firebaseio.com";
+
+    Firebase myFirebaseRef;
 
     static Size chooseBigEnoughSize(Size[] choices, int width, int height) {
         // Collect the supported resolutions that are at least as big as the preview Surface
@@ -134,6 +142,16 @@ public class RajFragment extends RajawaliFragment implements View.OnTouchListene
         mRenderer.setSurfaceView(mSurfaceView);
 
         super.setRenderer(mRenderer);
+
+        Firebase.setAndroidContext(main);
+        myFirebaseRef= new Firebase(FIREBASEURL);
+        myFirebaseRef.child("message").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                System.out.println(snapshot.getValue());  //prints "Do you have data? You'll love Firebase."
+            }
+            @Override public void onCancelled(FirebaseError error) { }
+        });
 
 
 
