@@ -58,7 +58,7 @@ public class AsyncHttpPost_presence extends AsyncTask<String, String, String> {
                 while (it.hasNext()) {
                     String key = it.next();
                     if (key.contains("header")){
-                        post.setHeader("Authorization", mData.get(key));
+                        post.setHeader("Authorization", "Bearer "+mData.get(key));
 
                     }else {
                         nameValuePair.add(new BasicNameValuePair(key, mData.get(key)));

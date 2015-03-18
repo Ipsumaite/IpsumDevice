@@ -327,8 +327,8 @@ public class MainActivity extends Activity implements onGPSChanged {
         data.put("email", user1);
         data.put("latitude", lat);
         data.put("longitude", lng);
-        AsyncHttpPost_presence asyncHttpPost = new AsyncHttpPost_presence(data, this);
-        asyncHttpPost.execute("http://ipsumapi.herokuapp.com/api/presence");
+        AsyncHttpPost_presence asyncHttpPost_presence = new AsyncHttpPost_presence(data, this);
+        asyncHttpPost_presence.execute("http://ipsumapi.herokuapp.com/api/presence");
 
     }
 
