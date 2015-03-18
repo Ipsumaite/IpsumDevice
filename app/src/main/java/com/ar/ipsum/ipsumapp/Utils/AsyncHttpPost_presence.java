@@ -6,7 +6,6 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.ar.ipsum.ipsumapp.LoginReply;
-import com.ar.ipsum.ipsumapp.MainActivity;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -29,17 +28,15 @@ import java.util.Iterator;
 /**
  * Created by QSR on 27-02-2015.
  */
-public class AsyncHttpPost  extends AsyncTask<String, String, String> {
+public class AsyncHttpPost_presence extends AsyncTask<String, String, String> {
         private HashMap<String, String> mData = null;// post data
         private Context mContext;
         public static final String tokenKey = "tokenKey";
-        public static final String state = "state";
-        public static final String name = "nameKey";
 
         /**
          * constructor
          */
-        public AsyncHttpPost(HashMap<String, String> data, Context context) {
+        public AsyncHttpPost_presence(HashMap<String, String> data, Context context) {
             mData = data;
             mContext = context;
         }
@@ -60,8 +57,12 @@ public class AsyncHttpPost  extends AsyncTask<String, String, String> {
                 Iterator<String> it = mData.keySet().iterator();
                 while (it.hasNext()) {
                     String key = it.next();
-                    nameValuePair.add(new BasicNameValuePair(key, mData.get(key)));
+                    if (key.contains("header")){
+                        post.setHeader("Authorization", mData.get(key));
 
+                    }else {
+                        nameValuePair.add(new BasicNameValuePair(key, mData.get(key)));
+                    }
                 }
 
                 post.setEntity(new UrlEncodedFormEntity(nameValuePair, "UTF-8"));
@@ -77,6 +78,10 @@ public class AsyncHttpPost  extends AsyncTask<String, String, String> {
             }
             catch (Exception e) {
             }
+
+
+
+
 
             return jsonstr;
         }
@@ -98,36 +103,21 @@ public class AsyncHttpPost  extends AsyncTask<String, String, String> {
                 jObject = new JSONObject(result);
 
                 /** Getting the parsed data as a List construct */
-                loginReply= loginJsonParser.parse(jObject);
+                /*loginReply= loginJsonParser.parse(jObject);
                 String mStatus = loginReply.getStatus();
                 String mToken = loginReply.gettoken();
                 if (mStatus.equals("Authenticated")){
-
                     sharedpreferences= mContext.getSharedPreferences(MainActivity.MyPREFERENCES,
                             Context.MODE_PRIVATE);
-
-                    //request user's credentials
-                    String user1=sharedpreferences.getString(name,"");
-                    HashMap<String, String> data = new HashMap<String, String>();
-
-                    data.put("header_token", mToken);
-                    data.put("email", user1);
-                    AsyncHttpGet_credentials asyncHttpGet = new AsyncHttpGet_credentials(data, mContext);
-                    asyncHttpGet.execute("http://ipsumapi.herokuapp.com/api/accountID/");
-
                     SharedPreferences.Editor editor = sharedpreferences.edit();
                     editor.putString(tokenKey,mToken);
-                    editor.putString(state,mStatus);
                     editor.commit();
-
-                }
+                }*/
 
             }catch(Exception e){
                 Log.d("Exception", e.toString());
             }
 
         }
-
-
 
 }

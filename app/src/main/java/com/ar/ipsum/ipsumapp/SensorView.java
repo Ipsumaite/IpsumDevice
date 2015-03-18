@@ -13,6 +13,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.ar.ipsum.ipsumapp.Utils.onGPSChanged;
 import com.ar.ipsum.ipsumapp.representation.Matrixf4x4;
 import com.ar.ipsum.ipsumapp.representation.Quaternion;
 
@@ -46,6 +47,7 @@ public class SensorView implements SensorEventListener, LocationListener {
 	float horizontalFOV;
 	Camera mCamera;
 	boolean init=false;
+    private onGPSChanged gpschanged;
 
 	private static final float NS2S = 1.0f / 1000000000.0f;
 
@@ -237,9 +239,12 @@ public class SensorView implements SensorEventListener, LocationListener {
     Sensor rotSensor;
 
 
-    public SensorView (LocationManager locationManager, SensorManager sensorManager) {
+
+    public SensorView (LocationManager locationManager, SensorManager sensorManager, onGPSChanged gpschanged) {
         this.sensorManager= sensorManager;
         this.locationManager= locationManager;
+        this.gpschanged= gpschanged;
+
 
         local[0]=mountWashington;
         local[1]=odivelas;
@@ -511,7 +516,10 @@ public class SensorView implements SensorEventListener, LocationListener {
 	@Override
 	public void onLocationChanged(Location location) {
 		// TODO Auto-generated method stub
-		lastLocation = location;
+        lastLocation = location;
+
+        this.gpschanged.onGPSChange(lastLocation);
+
 
 
         //lastLocation.setAltitude(200d);
@@ -830,4 +838,9 @@ public class SensorView implements SensorEventListener, LocationListener {
             return messages;
         }
     }
+
+
+
+
+
 }

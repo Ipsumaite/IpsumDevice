@@ -11,6 +11,7 @@ import android.content.res.TypedArray;
 import android.hardware.Camera;
 import android.hardware.SensorManager;
 import android.hardware.camera2.CameraManager;
+import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
@@ -26,6 +27,9 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.ar.ipsum.ipsumapp.Utils.AsyncHttpPost;
+import com.ar.ipsum.ipsumapp.Utils.AsyncHttpPost_presence;
+import com.ar.ipsum.ipsumapp.Utils.onGPSChanged;
+import com.ar.ipsum.ipsumapp.Utils.AsyncHttpGet_credentials;
 import com.ar.ipsum.ipsumapp.view.NavDrawerItem;
 import com.ar.ipsum.ipsumapp.view.NavDrawerListAdapter;
 
@@ -33,7 +37,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 
-public class MainActivity extends Activity  {
+public class MainActivity extends Activity implements onGPSChanged {
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
@@ -60,8 +64,12 @@ public class MainActivity extends Activity  {
     public static final String name = "nameKey";
     public static final String pass = "passwordKey";
     public static final String tokenKey = "tokenKey";
+    public static final String state = "state";
+    public static final String lat = "latitude";
+    public static final String lng = "longitude";
     SharedPreferences sharedpreferences;
     CameraManager mCameraManager;
+    onGPSChanged mCallback;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,9 +90,16 @@ public class MainActivity extends Activity  {
             arDisplay = new ArDisplayView(this.getApplicationContext(),this, camera);
             mLayout.addView(arDisplay);
         }*/
+        Activity activity = this;
+        try {
+            mCallback = (onGPSChanged) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString()
+                    + " must implement OnHeadlineSelectedListener");
+        }
 
         //Initiate orientation class
-        sense= new SensorView(locationManager, sensors);
+        sense= new SensorView(locationManager, sensors, mCallback);
         sense.start();
 
         mTitle = mDrawerTitle = getTitle();
@@ -279,6 +294,9 @@ public class MainActivity extends Activity  {
         String user1=sharedpreferences.getString(name,"");
         String pass1=sharedpreferences.getString(pass,"");
         String token1= sharedpreferences.getString(tokenKey,"");
+        SharedPreferences.Editor editor1 = sharedpreferences.edit();
+        editor1.putString(state,"");
+        editor1.commit();
         if(!isDataValid(user1, pass1)) {
             Toast.makeText(getBaseContext(),
                     "Login or password is incorrect", Toast.LENGTH_SHORT).show();
@@ -296,6 +314,39 @@ public class MainActivity extends Activity  {
         }
     }
 
+    public void presence(String lat, String lng){
+        sharedpreferences=getSharedPreferences(MyPREFERENCES,
+                Context.MODE_PRIVATE);
+        String user1=sharedpreferences.getString(name,"");
+        String token1= sharedpreferences.getString(tokenKey,"");
+
+        HashMap<String, String> data = new HashMap<String, String>();
+
+        data.put("header_token", token1);
+        //data.put("type", "presence");
+        data.put("email", user1);
+        data.put("latitude", lat);
+        data.put("longitude", lng);
+        AsyncHttpPost_presence asyncHttpPost = new AsyncHttpPost_presence(data, this);
+        asyncHttpPost.execute("http://ipsumapi.herokuapp.com/api/presence");
+
+    }
+
+    public void getCredentials(){
+        sharedpreferences=getSharedPreferences(MyPREFERENCES,
+                Context.MODE_PRIVATE);
+        String user1=sharedpreferences.getString(name,"");
+        String token1= sharedpreferences.getString(tokenKey,"");
+
+        HashMap<String, String> data = new HashMap<String, String>();
+
+        data.put("header_token", token1);
+        data.put("email", user1);
+        AsyncHttpGet_credentials asyncHttpGet = new AsyncHttpGet_credentials(data, this);
+        asyncHttpGet.execute("http://ipsumapi.herokuapp.com/api/accountID/");
+
+    }
+
     public boolean isDataValid(String user, String pass) {
 
         boolean isEmailValid = Patterns.EMAIL_ADDRESS.matcher(user).matches();
@@ -303,7 +354,25 @@ public class MainActivity extends Activity  {
         return isEmailValid && isPasswordValid;
     }
 
+    @Override
+    public void onGPSChange(Location location) {
+
+
+        try {
+            presence(""+location.getLatitude(), ""+location.getLongitude());
+            //auto.UpdateData(ponto);
+            //res.UpdateResults(ponto);
+            Log.v("Yeah", "entrei");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
 
 
 
 }
+
+
+
