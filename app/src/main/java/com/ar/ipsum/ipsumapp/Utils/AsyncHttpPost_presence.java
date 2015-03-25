@@ -5,7 +5,9 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.ar.ipsum.ipsumapp.IDAnswer;
 import com.ar.ipsum.ipsumapp.LoginReply;
+import com.ar.ipsum.ipsumapp.MainActivity;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -32,6 +34,7 @@ public class AsyncHttpPost_presence extends AsyncTask<String, String, String> {
         private HashMap<String, String> mData = null;// post data
         private Context mContext;
         public static final String tokenKey = "tokenKey";
+        public static final String state = "state";
 
         /**
          * constructor
@@ -91,11 +94,10 @@ public class AsyncHttpPost_presence extends AsyncTask<String, String, String> {
          */
         @Override
         protected void onPostExecute(String result) {
-
-            LoginJSONParser loginJsonParser = new LoginJSONParser();
-            LoginReply loginReply= new LoginReply();
+            PresenceJSONParser presenceJSONParser = new PresenceJSONParser();
             JSONObject jObject;
             SharedPreferences sharedpreferences;
+            String message="";
 
 
             try{
@@ -103,16 +105,16 @@ public class AsyncHttpPost_presence extends AsyncTask<String, String, String> {
                 jObject = new JSONObject(result);
 
                 /** Getting the parsed data as a List construct */
-                /*loginReply= loginJsonParser.parse(jObject);
-                String mStatus = loginReply.getStatus();
-                String mToken = loginReply.gettoken();
-                if (mStatus.equals("Authenticated")){
+                message= presenceJSONParser.parse(jObject);
+
+                if (message.contains("registered")){
                     sharedpreferences= mContext.getSharedPreferences(MainActivity.MyPREFERENCES,
                             Context.MODE_PRIVATE);
                     SharedPreferences.Editor editor = sharedpreferences.edit();
-                    editor.putString(tokenKey,mToken);
+                    editor.putString(state,"Registered");
                     editor.commit();
-                }*/
+
+                }
 
             }catch(Exception e){
                 Log.d("Exception", e.toString());

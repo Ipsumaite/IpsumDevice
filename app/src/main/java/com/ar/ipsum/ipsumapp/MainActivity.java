@@ -65,6 +65,7 @@ public class MainActivity extends Activity implements onGPSChanged {
     public static final String pass = "passwordKey";
     public static final String tokenKey = "tokenKey";
     public static final String state = "state";
+    public static final String id = "idfirebaseKey";
     public static final String lat = "latitude";
     public static final String lng = "longitude";
     SharedPreferences sharedpreferences;
@@ -296,6 +297,7 @@ public class MainActivity extends Activity implements onGPSChanged {
         String token1= sharedpreferences.getString(tokenKey,"");
         SharedPreferences.Editor editor1 = sharedpreferences.edit();
         editor1.putString(state,"");
+        editor1.putString(id,"");
         editor1.commit();
         if(!isDataValid(user1, pass1)) {
             Toast.makeText(getBaseContext(),
@@ -360,9 +362,7 @@ public class MainActivity extends Activity implements onGPSChanged {
 
         try {
             presence(""+location.getLatitude(), ""+location.getLongitude());
-            //auto.UpdateData(ponto);
-            //res.UpdateResults(ponto);
-            Log.v("Yeah", "entrei");
+
         } catch (Exception e) {
             e.printStackTrace();
         }

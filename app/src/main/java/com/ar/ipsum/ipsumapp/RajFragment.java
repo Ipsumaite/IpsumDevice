@@ -2,6 +2,7 @@ package com.ar.ipsum.ipsumapp;
 
 import android.animation.AnimatorInflater;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.ImageFormat;
 import android.hardware.camera2.CameraAccessException;
@@ -17,6 +18,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.preference.PreferenceManager;
 import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.util.Size;
@@ -34,6 +36,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.ar.ipsum.ipsumapp.view.FloatingActionButton;
+import com.firebase.client.AuthData;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
@@ -57,7 +60,7 @@ import rajawali.RajawaliFragment;
  */
 
 
-public class RajFragment extends RajawaliFragment implements View.OnTouchListener{
+public class RajFragment extends RajawaliFragment implements View.OnTouchListener, SharedPreferences.OnSharedPreferenceChangeListener{
 
 
     /** Output files will be saved as /sdcard/Pictures/cameratoo*.jpg */
@@ -117,6 +120,7 @@ public class RajFragment extends RajawaliFragment implements View.OnTouchListene
         /*mPreviewView = new FixedAspectSurfaceView(this.getActivity());
         mPreviewView.getHolder().addCallback(this);*/
 
+
         mBackgroundThread = new HandlerThread("background");
         mBackgroundThread.start();
         mBackgroundHandler = new Handler(mBackgroundThread.getLooper());
@@ -143,8 +147,12 @@ public class RajFragment extends RajawaliFragment implements View.OnTouchListene
 
         super.setRenderer(mRenderer);
 
+        PreferenceManager.getDefaultSharedPreferences(main).registerOnSharedPreferenceChangeListener(this);
+
         Firebase.setAndroidContext(main);
         myFirebaseRef= new Firebase(FIREBASEURL);
+        AuthData authData= myFirebaseRef.getAuth();
+        myFirebaseRef.auth
         myFirebaseRef.child("message").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
@@ -152,6 +160,8 @@ public class RajFragment extends RajawaliFragment implements View.OnTouchListene
             }
             @Override public void onCancelled(FirebaseError error) { }
         });
+
+
 
 
 
@@ -326,6 +336,12 @@ public class RajFragment extends RajawaliFragment implements View.OnTouchListene
 
             return false;
             //return onTouchEvent(event);
+
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        Log.v("Preference",key);
 
     }
 

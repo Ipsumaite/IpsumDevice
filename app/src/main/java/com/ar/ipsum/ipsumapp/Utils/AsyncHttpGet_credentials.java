@@ -1,7 +1,13 @@
 package com.ar.ipsum.ipsumapp.Utils;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.util.Log;
+
+import com.ar.ipsum.ipsumapp.IDAnswer;
+import com.ar.ipsum.ipsumapp.LoginReply;
+import com.ar.ipsum.ipsumapp.MainActivity;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -10,6 +16,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -24,6 +31,8 @@ public class AsyncHttpGet_credentials extends AsyncTask<String, String, String> 
     private Context mContext;
     public static final String tokenKey = "tokenKey";
     public static final String state = "state";
+    public static final String name = "nameKey";
+    public static final String id = "idfirebaseKey";
 
     public AsyncHttpGet_credentials(HashMap<String, String> data, Context context) {
         mData = data;
@@ -83,6 +92,32 @@ public class AsyncHttpGet_credentials extends AsyncTask<String, String, String> 
     }
 
     protected void onPostExecute(String result) {
+        IDFirebaseJSONParser idFirebaseJSONParser = new IDFirebaseJSONParser();
+        IDAnswer idAnswery= new IDAnswer();
+        JSONObject jObject;
+        SharedPreferences sharedpreferences;
 
+
+        try{
+            //jObject = new JSONObject(jsonData[0]);
+            jObject = new JSONObject(result);
+
+            /** Getting the parsed data as a List construct */
+            idAnswery= idFirebaseJSONParser.parse(jObject);
+            String email = idAnswery.getEmail();
+            String idfirebase = idAnswery.getId();
+            sharedpreferences= mContext.getSharedPreferences(MainActivity.MyPREFERENCES,
+                    Context.MODE_PRIVATE);
+            String user1=sharedpreferences.getString(name,"");
+            if (user1.equals(email)){
+                SharedPreferences.Editor editor = sharedpreferences.edit();
+                editor.putString(id,idfirebase);
+                editor.commit();
+
+            }
+
+        }catch(Exception e){
+            Log.d("Exception", e.toString());
+        }
     }
 }
