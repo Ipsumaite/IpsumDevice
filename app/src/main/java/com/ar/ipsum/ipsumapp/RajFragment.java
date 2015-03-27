@@ -147,12 +147,12 @@ public class RajFragment extends RajawaliFragment implements View.OnTouchListene
 
         super.setRenderer(mRenderer);
 
-        PreferenceManager.getDefaultSharedPreferences(main).registerOnSharedPreferenceChangeListener(this);
+        //PreferenceManager.getDefaultSharedPreferences(main).registerOnSharedPreferenceChangeListener(this);
 
         Firebase.setAndroidContext(main);
         myFirebaseRef= new Firebase(FIREBASEURL);
         AuthData authData= myFirebaseRef.getAuth();
-        myFirebaseRef.auth
+        //myFirebaseRef.auth
         myFirebaseRef.child("message").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
@@ -271,6 +271,9 @@ public class RajFragment extends RajawaliFragment implements View.OnTouchListene
     public void onResume() {
         super.onResume();
 
+
+        PreferenceManager.getDefaultSharedPreferences(getActivity()).registerOnSharedPreferenceChangeListener(this);
+
         // Start a background thread to manage camera requests
         /*mBackgroundThread = new HandlerThread("background");
         mBackgroundThread.start();
@@ -287,7 +290,7 @@ public class RajFragment extends RajawaliFragment implements View.OnTouchListene
 
     @Override
     public void onPause() {
-
+        PreferenceManager.getDefaultSharedPreferences(getActivity()).unregisterOnSharedPreferenceChangeListener(this);
         super.onPause();
 
         try {
