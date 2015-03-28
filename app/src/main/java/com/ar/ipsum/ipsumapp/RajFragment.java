@@ -88,6 +88,8 @@ public class RajFragment extends RajawaliFragment implements View.OnTouchListene
 
     Firebase myFirebaseRef;
 
+
+
     static Size chooseBigEnoughSize(Size[] choices, int width, int height) {
         // Collect the supported resolutions that are at least as big as the preview Surface
         List<Size> bigEnough = new ArrayList<Size>();
@@ -108,6 +110,8 @@ public class RajFragment extends RajawaliFragment implements View.OnTouchListene
 
     private Renderer mRenderer;
     private SensorView sense;
+    private SharedPreferences prefs;
+    private String id="";
 
 
 
@@ -119,7 +123,9 @@ public class RajFragment extends RajawaliFragment implements View.OnTouchListene
         //mPreviewView = (FixedAspectSurfaceView) findViewById(R.id.preview);
         /*mPreviewView = new FixedAspectSurfaceView(this.getActivity());
         mPreviewView.getHolder().addCallback(this);*/
-
+        //prefs = PreferenceManager.getDefaultSharedPreferences(this.getActivity().getApplicationContext());
+        prefs =this.getActivity().getApplicationContext().getSharedPreferences(MainActivity.MyPREFERENCES,
+                Context.MODE_PRIVATE);
 
         mBackgroundThread = new HandlerThread("background");
         mBackgroundThread.start();
@@ -147,19 +153,12 @@ public class RajFragment extends RajawaliFragment implements View.OnTouchListene
 
         super.setRenderer(mRenderer);
 
-        //PreferenceManager.getDefaultSharedPreferences(main).registerOnSharedPreferenceChangeListener(this);
+
 
         Firebase.setAndroidContext(main);
         myFirebaseRef= new Firebase(FIREBASEURL);
         AuthData authData= myFirebaseRef.getAuth();
         //myFirebaseRef.auth
-        myFirebaseRef.child("message").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot snapshot) {
-                System.out.println(snapshot.getValue());  //prints "Do you have data? You'll love Firebase."
-            }
-            @Override public void onCancelled(FirebaseError error) { }
-        });
 
 
 
@@ -272,7 +271,10 @@ public class RajFragment extends RajawaliFragment implements View.OnTouchListene
         super.onResume();
 
 
-        PreferenceManager.getDefaultSharedPreferences(getActivity()).registerOnSharedPreferenceChangeListener(this);
+        //PreferenceManager.getDefaultSharedPreferences(getActivity()).registerOnSharedPreferenceChangeListener(this);
+        //PreferenceManager.getDefaultSharedPreferences(this.getActivity().getApplicationContext()).registerOnSharedPreferenceChangeListener(this);
+        prefs.registerOnSharedPreferenceChangeListener(this);
+
 
         // Start a background thread to manage camera requests
         /*mBackgroundThread = new HandlerThread("background");
@@ -290,7 +292,8 @@ public class RajFragment extends RajawaliFragment implements View.OnTouchListene
 
     @Override
     public void onPause() {
-        PreferenceManager.getDefaultSharedPreferences(getActivity()).unregisterOnSharedPreferenceChangeListener(this);
+        //PreferenceManager.getDefaultSharedPreferences(getActivity()).unregisterOnSharedPreferenceChangeListener(this);
+        prefs.unregisterOnSharedPreferenceChangeListener(this);
         super.onPause();
 
         try {
@@ -343,8 +346,19 @@ public class RajFragment extends RajawaliFragment implements View.OnTouchListene
     }
 
     @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        Log.v("Preference",key);
+    public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
+        if (key.equals("idfirebaseKey")) {
+            id= prefs.getString("idfirebaseKey","");
+            myFirebaseRef.child("channels/"+id).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot snapshot) {
+                    System.out.println(snapshot.getValue());  //prints "Do you have data? You'll love Firebase."
+                }
+                @Override public void onCancelled(FirebaseError error) { }
+            });
+
+        }
+
 
     }
 
