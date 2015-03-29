@@ -1,4 +1,4 @@
-package com.ar.ipsum.ipsumapp.types;
+package com.ar.ipsum.ipsumapp.Resources;
 
 import java.security.Timestamp;
 import java.sql.Time;
