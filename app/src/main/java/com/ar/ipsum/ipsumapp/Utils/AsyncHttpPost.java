@@ -114,6 +114,8 @@ public class AsyncHttpPost  extends AsyncTask<String, String, String> {
                     data.put("email", user1);
                     AsyncHttpGet_credentials asyncHttpGet = new AsyncHttpGet_credentials(data, mContext);
                     asyncHttpGet.execute("http://ipsumapi.herokuapp.com/api/accountID/");
+                    AsyncHttpGet_channels asyncHttpGet_channels = new AsyncHttpGet_channels(data, mContext);
+                    asyncHttpGet_channels.execute("http://ipsumapi.herokuapp.com/api/subscriptions/");
 
                     SharedPreferences.Editor editor = sharedpreferences.edit();
                     editor.putString(tokenKey,mToken);

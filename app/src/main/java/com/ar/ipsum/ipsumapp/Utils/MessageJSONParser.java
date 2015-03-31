@@ -1,6 +1,5 @@
 package com.ar.ipsum.ipsumapp.Utils;
 
-import com.ar.ipsum.ipsumapp.LoginReply;
 import com.ar.ipsum.ipsumapp.Resources.Message;
 
 import org.json.JSONException;
@@ -41,7 +40,17 @@ public class MessageJSONParser {
                 content = jMsg.getString("content");
             }
 
+            if(!jMsg.isNull("date")){
+                date = new Date(Integer.parseInt(jMsg.getString("date")));
+            }
 
+            if(!jMsg.isNull("latitude")){
+                latitude = Float.parseFloat(jMsg.getString("latitude"));
+            }
+
+            if(!jMsg.isNull("longitude")){
+                longitude = Float.parseFloat(jMsg.getString("longitude"));
+            }
 
 
         } catch (JSONException e) {

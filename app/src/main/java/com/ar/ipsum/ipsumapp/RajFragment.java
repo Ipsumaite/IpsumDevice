@@ -18,7 +18,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
-import android.preference.PreferenceManager;
 import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.util.Size;
@@ -35,12 +34,17 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.ar.ipsum.ipsumapp.Utils.MessageJSONParser;
 import com.ar.ipsum.ipsumapp.view.FloatingActionButton;
 import com.firebase.client.AuthData;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -51,7 +55,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import rajawali.RajawaliFragment;
 
@@ -352,7 +358,24 @@ public class RajFragment extends RajawaliFragment implements View.OnTouchListene
             myFirebaseRef.child("channels/"+id).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot snapshot) {
-                    System.out.println(snapshot.getValue());  //prints "Do you have data? You'll love Firebase."
+                    //System.out.println(snapshot.getValue());  //prints "Do you have data? You'll love Firebase."
+                    JSONObject jObject;
+                    JSONArray jArray;
+                    com.ar.ipsum.ipsumapp.Resources.Message message= new com.ar.ipsum.ipsumapp.Resources.Message();
+                    MessageJSONParser messageJSONParser= new MessageJSONParser();
+                    Map<String, Object> map= new HashMap<String, Object>();
+
+                    map = (Map<String, Object>) snapshot.getValue();
+                    jObject = new JSONObject(map);
+
+                    System.out.println(map.get("a0924000000FcM3AAK"));
+                    //jObject = (JSONObject) snapshot.getValue();
+                    //jArray= new JSONArray(snapshot.getValue().toString());
+                   // message= messageJSONParser.parse(jArray);
+
+
+                    /** Getting the parsed data as a List construct */
+
                 }
                 @Override public void onCancelled(FirebaseError error) { }
             });
