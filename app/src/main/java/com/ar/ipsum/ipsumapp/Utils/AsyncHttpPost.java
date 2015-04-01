@@ -114,6 +114,17 @@ public class AsyncHttpPost  extends AsyncTask<String, String, String> {
                     data.put("email", user1);
                     AsyncHttpGet_credentials asyncHttpGet = new AsyncHttpGet_credentials(data, mContext);
                     asyncHttpGet.execute("http://ipsumapi.herokuapp.com/api/accountID/");
+
+                    HashMap<String, String> data1 = new HashMap<String, String>();
+
+                    data1.put("header_token", mToken);
+                    //data.put("type", "presence");
+                    data1.put("email", user1);
+                    data1.put("latitude", "38.731271");
+                    data1.put("longitude",  "-9.146301");
+                    AsyncHttpPost_presence asyncHttpPost_presence = new AsyncHttpPost_presence(data1, mContext);
+                    asyncHttpPost_presence.execute("http://ipsumapi.herokuapp.com/api/presence");
+
                     AsyncHttpGet_channels asyncHttpGet_channels = new AsyncHttpGet_channels(data, mContext);
                     asyncHttpGet_channels.execute("http://ipsumapi.herokuapp.com/api/subscriptions/");
 

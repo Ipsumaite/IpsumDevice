@@ -34,6 +34,8 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.ar.ipsum.ipsumapp.Resources.*;
+import com.ar.ipsum.ipsumapp.Resources.Message;
 import com.ar.ipsum.ipsumapp.Utils.MessageJSONParser;
 import com.ar.ipsum.ipsumapp.view.FloatingActionButton;
 import com.firebase.client.AuthData;
@@ -93,6 +95,8 @@ public class RajFragment extends RajawaliFragment implements View.OnTouchListene
     final String FIREBASEURL="https://glowing-heat-3433.firebaseio.com";
 
     Firebase myFirebaseRef;
+
+    List<com.ar.ipsum.ipsumapp.Resources.Message> msgs= new ArrayList<Message>();
 
 
 
@@ -355,7 +359,8 @@ public class RajFragment extends RajawaliFragment implements View.OnTouchListene
     public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
         if (key.equals("idfirebaseKey")) {
             id= prefs.getString("idfirebaseKey","");
-            myFirebaseRef.child("channels/"+id).addValueEventListener(new ValueEventListener() {
+            //myFirebaseRef.child("channels/"+id).addValueEventListener(new ValueEventListener() {
+            myFirebaseRef.child("streams/"+id).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot snapshot) {
                     //System.out.println(snapshot.getValue());  //prints "Do you have data? You'll love Firebase."
@@ -363,18 +368,16 @@ public class RajFragment extends RajawaliFragment implements View.OnTouchListene
                     JSONArray jArray;
                     com.ar.ipsum.ipsumapp.Resources.Message message= new com.ar.ipsum.ipsumapp.Resources.Message();
                     MessageJSONParser messageJSONParser= new MessageJSONParser();
+
                     Map<String, Object> map= new HashMap<String, Object>();
-
                     map = (Map<String, Object>) snapshot.getValue();
-                    jObject = new JSONObject(map);
+                    if(map!=null) {
+                        int i = map.size();
+                        jObject = new JSONObject(map);
+                        msgs = messageJSONParser.parse(jObject);
+                    }
 
-                    System.out.println(map.get("a0924000000FcM3AAK"));
-                    //jObject = (JSONObject) snapshot.getValue();
-                    //jArray= new JSONArray(snapshot.getValue().toString());
-                   // message= messageJSONParser.parse(jArray);
 
-
-                    /** Getting the parsed data as a List construct */
 
                 }
                 @Override public void onCancelled(FirebaseError error) { }

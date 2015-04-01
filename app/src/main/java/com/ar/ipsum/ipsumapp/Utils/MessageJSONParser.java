@@ -2,20 +2,37 @@ package com.ar.ipsum.ipsumapp.Utils;
 
 import com.ar.ipsum.ipsumapp.Resources.Message;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by tiago_000 on 29/03/2015.
  */
 public class MessageJSONParser {
-    public Message parse(JSONObject jObject){
-
+    public List<Message> parse(JSONObject jObject){
+        List<Message> list_msg= new ArrayList<Message>();
+        JSONArray jArray= new JSONArray();
         JSONObject jMessage = jObject;
-        return getMsg(jMessage);
+
+        try {
+            if(!jObject.isNull("contents")){
+                jArray = jObject.getJSONArray("contents");
+                int p= jArray.length();
+                for (int i=0; i<jArray.length();i++){
+                    jMessage= jArray.getJSONObject(i);
+                    list_msg.add(getMsg(jMessage));
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return list_msg;
     }
 
     /** Parsing the Place JSON object */
@@ -25,7 +42,7 @@ public class MessageJSONParser {
         HashMap<String, String> msg = new HashMap<String, String>();
         String channel = "";
         String content="";
-        Date date= new Date();
+        String date= "";
         float latitude=0;
         float longitude=0;
         Message message;
@@ -41,7 +58,7 @@ public class MessageJSONParser {
             }
 
             if(!jMsg.isNull("date")){
-                date = new Date(Integer.parseInt(jMsg.getString("date")));
+                date = jMsg.getString("date");
             }
 
             if(!jMsg.isNull("latitude")){

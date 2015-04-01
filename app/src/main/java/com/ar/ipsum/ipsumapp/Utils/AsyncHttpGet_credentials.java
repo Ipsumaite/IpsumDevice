@@ -6,7 +6,6 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.ar.ipsum.ipsumapp.IDAnswer;
-import com.ar.ipsum.ipsumapp.LoginReply;
 import com.ar.ipsum.ipsumapp.MainActivity;
 
 import org.apache.http.HttpEntity;
@@ -115,6 +114,7 @@ public class AsyncHttpGet_credentials extends AsyncTask<String, String, String> 
                 editor.commit();
 
             }
+
 
         }catch(Exception e){
             Log.d("Exception", e.toString());
