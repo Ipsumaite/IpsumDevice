@@ -34,10 +34,12 @@ public class AsyncHttpGet_channels extends AsyncTask<String, String, String> {
     public static final String state = "state";
     public static final String name = "nameKey";
     public static final String id = "idfirebaseKey";
+    public onChannelsChanged channelsChanged=null;
 
     public AsyncHttpGet_channels(HashMap<String, String> data, Context context) {
         mData = data;
         mContext = context;
+        channelsChanged= (onChannelsChanged) mContext;
     }
 
 
@@ -94,7 +96,7 @@ public class AsyncHttpGet_channels extends AsyncTask<String, String, String> {
 
     protected void onPostExecute(String result) {
         ChannelJSONParser channelJSONParser= new ChannelJSONParser();
-        IDAnswer idAnswery= new IDAnswer();
+
         JSONObject jObject;
         SharedPreferences sharedpreferences;
 
@@ -105,17 +107,7 @@ public class AsyncHttpGet_channels extends AsyncTask<String, String, String> {
             List<Channel> channels= new ArrayList<Channel>();
             /** Getting the parsed data as a List construct */
             channels= channelJSONParser.parse(jObject);
-            String email = idAnswery.getEmail();
-            String idfirebase = idAnswery.getId();
-            sharedpreferences= mContext.getSharedPreferences(MainActivity.MyPREFERENCES,
-                    Context.MODE_PRIVATE);
-            String user1=sharedpreferences.getString(name,"");
-            if (user1.equals(email)){
-                SharedPreferences.Editor editor = sharedpreferences.edit();
-                editor.putString(id,idfirebase);
-                editor.commit();
-
-            }
+            channelsChanged.onChannelChange((ArrayList<Channel>) channels);
 
         }catch(Exception e){
             Log.d("Exception", e.toString());

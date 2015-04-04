@@ -29,4 +29,29 @@ public class Channel {
         this.Subscription=Subscription;
     }
 
+    public String getName(){
+        return this.name;
+
+    }
+
+    public String getDescription(){
+        return this.description;
+
+    }
+
+    public boolean getPremiun(){
+        return this.premium;
+
+    }
+
+    public boolean getSubscribed(){
+        return this.subscribed;
+
+    }
+
+    public Subscription getSubscription(){
+        return this.Subscription;
+
+    }
+
 }

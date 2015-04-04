@@ -26,18 +26,21 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.ar.ipsum.ipsumapp.Resources.Channel;
 import com.ar.ipsum.ipsumapp.Utils.AsyncHttpPost;
 import com.ar.ipsum.ipsumapp.Utils.AsyncHttpPost_presence;
+import com.ar.ipsum.ipsumapp.Utils.onChannelsChanged;
 import com.ar.ipsum.ipsumapp.Utils.onGPSChanged;
 import com.ar.ipsum.ipsumapp.Utils.AsyncHttpGet_credentials;
 import com.ar.ipsum.ipsumapp.view.NavDrawerItem;
 import com.ar.ipsum.ipsumapp.view.NavDrawerListAdapter;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
 
-public class MainActivity extends Activity implements onGPSChanged {
+public class MainActivity extends Activity implements onGPSChanged, onChannelsChanged {
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
@@ -58,8 +61,9 @@ public class MainActivity extends Activity implements onGPSChanged {
     private LocationManager locationManager;
     private SensorManager sensors;
     public SensorView sense;
-    private Camera camera;
+    //private Camera camera;
     private RajFragment raj= new RajFragment();
+    private ChannelFragment cha= new ChannelFragment();
     public static final String MyPREFERENCES = "MyPrefs" ;
     public static final String name = "nameKey";
     public static final String pass = "passwordKey";
@@ -71,6 +75,7 @@ public class MainActivity extends Activity implements onGPSChanged {
     SharedPreferences sharedpreferences;
     CameraManager mCameraManager;
     onGPSChanged mCallback;
+    private ArrayList<Channel> channels= new ArrayList<Channel>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -171,6 +176,26 @@ public class MainActivity extends Activity implements onGPSChanged {
         }
     }
 
+    @Override
+    public void onChannelChange(ArrayList<Channel> channels) {
+        this.channels=channels;
+        sharedpreferences=getSharedPreferences(MyPREFERENCES,
+                Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor1 = sharedpreferences.edit();
+        Gson gson = new Gson();
+        String jsonchannels = gson.toJson(this.channels);
+        editor1.putString("Channels", jsonchannels);
+        editor1.commit();
+
+        try {
+            cha.onChannelChange(channels);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+    }
+
     /**
      * Slide menu item click listener
      * */
@@ -232,6 +257,7 @@ public class MainActivity extends Activity implements onGPSChanged {
                 break;*/
             case 2:
                 fragment = new ChannelFragment();
+                cha= (ChannelFragment) fragment;
                 break;
             case 3:
                 fragment = new LoginFragment();
@@ -298,6 +324,7 @@ public class MainActivity extends Activity implements onGPSChanged {
         SharedPreferences.Editor editor1 = sharedpreferences.edit();
         editor1.putString(state,"");
         editor1.putString(id,"");
+        editor1.putString("Channels","");
         editor1.commit();
         if(!isDataValid(user1, pass1)) {
             Toast.makeText(getBaseContext(),
