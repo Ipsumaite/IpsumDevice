@@ -15,6 +15,10 @@ import com.ar.ipsum.ipsumapp.Resources.Channel;
 import com.ar.ipsum.ipsumapp.Utils.AsyncHttpGet_channels;
 import com.ar.ipsum.ipsumapp.Utils.AsyncHttp_channels;
 
+import org.apache.http.entity.StringEntity;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -43,7 +47,7 @@ public class Channels_Adapter extends ArrayAdapter<Channel> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         // Get the data item for this position
-        Channel channel = getItem(position);
+        final Channel channel = getItem(position);
         LayoutInflater inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View rowView = inflater.inflate(R.layout.list_channels, parent, false);
@@ -81,13 +85,90 @@ public class Channels_Adapter extends ArrayAdapter<Channel> {
                     HashMap<String, String> data = new HashMap<String, String>();
 
                     data.put("header_token", mToken);
-                    data.put("email", user1);
+
+
+                    String message="";
+                    String subscription="";
+                    JSONObject object = new JSONObject();
+                    JSONObject object_subs = new JSONObject();
+                    try {
+
+                        object_subs.put("ChannelId", channel.getId());
+                        object_subs.put("flag", 1);
+                        object_subs.put("ContractTerm", 6);
+
+                    } catch (Exception ex) {
+
+                    }
+                    JSONArray array = new JSONArray();
+                    try {
+
+                        array.put(object_subs);
+
+                    } catch (Exception ex) {
+
+                    }
+                    subscription= array.toString();
+                    try {
+                        object.put("email", user1);
+                        object.put("subscriptions", subscription);
+
+                    } catch (Exception ex) {
+
+                    }
+                    message = object.toString();
+                    data.put("message", message);
+
                     String mMethod= "Put";
                     int mFlag=0;
                     AsyncHttp_channels asyncHttp_channels = new AsyncHttp_channels(data, context, mMethod, mFlag);
                     asyncHttp_channels.execute("http://ipsumapi.herokuapp.com/api/subscriptions/");
                 }else{
-                    //Retirar a subscrição
+                    //request user's credentials
+                    String user1=sharedpreferences.getString(name,"");
+                    String mToken=sharedpreferences.getString(tokenKey,"");
+                    HashMap<String, String> data = new HashMap<String, String>();
+
+                    data.put("header_token", mToken);
+
+
+                    String message="";
+                    String subscription="";
+                    JSONObject object = new JSONObject();
+                    JSONObject object_subs = new JSONObject();
+                    try {
+
+                        object_subs.put("ChannelId", channel.getId());
+                        // unsubscribe the channel
+                        object_subs.put("flag", 0);
+                        object_subs.put("ContractTerm", 6);
+
+                    } catch (Exception ex) {
+
+                    }
+                    JSONArray array = new JSONArray();
+                    try {
+
+                        array.put(object_subs);
+
+                    } catch (Exception ex) {
+
+                    }
+                    subscription= array.toString();
+                    try {
+                        object.put("email", user1);
+                        object.put("subscriptions", subscription);
+
+                    } catch (Exception ex) {
+
+                    }
+                    message = object.toString();
+                    data.put("message", message);
+
+                    String mMethod= "Put";
+                    int mFlag=0;
+                    AsyncHttp_channels asyncHttp_channels = new AsyncHttp_channels(data, context, mMethod, mFlag);
+                    asyncHttp_channels.execute("http://ipsumapi.herokuapp.com/api/subscriptions/");
                 }
 
             }

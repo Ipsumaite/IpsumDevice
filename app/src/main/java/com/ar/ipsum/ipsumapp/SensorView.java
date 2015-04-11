@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.ar.ipsum.ipsumapp.Utils.onGPSChanged;
+import com.ar.ipsum.ipsumapp.Utils.onOrientationChanged;
 import com.ar.ipsum.ipsumapp.representation.Matrixf4x4;
 import com.ar.ipsum.ipsumapp.representation.Quaternion;
 
@@ -48,6 +49,7 @@ public class SensorView implements SensorEventListener, LocationListener {
 	Camera mCamera;
 	boolean init=false;
     private onGPSChanged gpschanged;
+    private onOrientationChanged orientationchanged;
 
 	private static final float NS2S = 1.0f / 1000000000.0f;
 
@@ -240,10 +242,11 @@ public class SensorView implements SensorEventListener, LocationListener {
 
 
 
-    public SensorView (LocationManager locationManager, SensorManager sensorManager, onGPSChanged gpschanged) {
+    public SensorView (LocationManager locationManager, SensorManager sensorManager, onGPSChanged gpschanged, onOrientationChanged orientationchanged) {
         this.sensorManager= sensorManager;
         this.locationManager= locationManager;
         this.gpschanged= gpschanged;
+        this.orientationchanged=orientationchanged;
 
 
         local[0]=mountWashington;
@@ -771,7 +774,7 @@ public class SensorView implements SensorEventListener, LocationListener {
             RotationMatrix.matrix= currentOrientationRotationMatrix.matrix.clone();
             SensorManager.remapCoordinateSystem(currentOrientationRotationMatrix.matrix, SensorManager.AXIS_Z, SensorManager.AXIS_MINUS_X,RotationMatrix.matrix);
             SensorManager.getOrientation(RotationMatrix.matrix, accMagOrientation);
-
+            orientationchanged.onOrientaionChange(accMagOrientation);
 
 
 

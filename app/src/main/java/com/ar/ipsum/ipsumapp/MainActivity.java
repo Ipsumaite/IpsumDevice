@@ -32,6 +32,7 @@ import com.ar.ipsum.ipsumapp.Utils.AsyncHttpPost_presence;
 import com.ar.ipsum.ipsumapp.Utils.onChannelsChanged;
 import com.ar.ipsum.ipsumapp.Utils.onGPSChanged;
 import com.ar.ipsum.ipsumapp.Utils.AsyncHttpGet_credentials;
+import com.ar.ipsum.ipsumapp.Utils.onOrientationChanged;
 import com.ar.ipsum.ipsumapp.view.NavDrawerItem;
 import com.ar.ipsum.ipsumapp.view.NavDrawerListAdapter;
 import com.google.gson.Gson;
@@ -40,7 +41,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 
-public class MainActivity extends Activity implements onGPSChanged, onChannelsChanged {
+public class MainActivity extends Activity implements onGPSChanged, onChannelsChanged, onOrientationChanged {
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
@@ -75,7 +76,9 @@ public class MainActivity extends Activity implements onGPSChanged, onChannelsCh
     SharedPreferences sharedpreferences;
     CameraManager mCameraManager;
     onGPSChanged mCallback;
+    onOrientationChanged mCallback1;
     private ArrayList<Channel> channels= new ArrayList<Channel>();
+    private float[] Orientation= new float[3];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,9 +106,15 @@ public class MainActivity extends Activity implements onGPSChanged, onChannelsCh
             throw new ClassCastException(activity.toString()
                     + " must implement OnHeadlineSelectedListener");
         }
+        try {
+            mCallback1 = (onOrientationChanged) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString()
+                    + " must implement OnHeadlineSelectedListener");
+        }
 
         //Initiate orientation class
-        sense= new SensorView(locationManager, sensors, mCallback);
+        sense= new SensorView(locationManager, sensors, mCallback, mCallback1);
         sense.start();
 
         mTitle = mDrawerTitle = getTitle();
@@ -194,6 +203,12 @@ public class MainActivity extends Activity implements onGPSChanged, onChannelsCh
         }
 
 
+    }
+
+    @Override
+    public void onOrientaionChange(float[] orientation) {
+        this.Orientation= orientation;
+        raj.onOrientaionChange(orientation);
     }
 
     /**

@@ -14,6 +14,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONObject;
@@ -58,6 +59,7 @@ public class AsyncHttp_channels extends AsyncTask<String, String, String> {
         String data="";
         String token="";
         String email="";
+        String message="";
 
 
 
@@ -72,6 +74,9 @@ public class AsyncHttp_channels extends AsyncTask<String, String, String> {
 
                 }else if(key.contains("email")) {
                     email= mData.get(key);
+
+                }else if(key.contains("message")) {
+                    message= mData.get(key);
 
                 }
 
@@ -96,7 +101,9 @@ public class AsyncHttp_channels extends AsyncTask<String, String, String> {
             }else if(mMethod.contains("Put")){
                 HttpClient client = new DefaultHttpClient();
                 HttpPost post = new HttpPost(params[0]);
-                post.setEntity(new UrlEncodedFormEntity(nameValuePair, "UTF-8"));
+                post.setEntity(new StringEntity(message, "UTF8"));
+                post.setHeader("Authorization", "Bearer "+token);
+
                 HttpResponse response = client.execute(post);
 
                 int status = response.getStatusLine().getStatusCode();

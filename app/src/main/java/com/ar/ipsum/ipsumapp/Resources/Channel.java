@@ -34,6 +34,11 @@ public class Channel {
 
     }
 
+    public String getId(){
+        return this.id;
+
+    }
+
     public String getDescription(){
         return this.description;
 

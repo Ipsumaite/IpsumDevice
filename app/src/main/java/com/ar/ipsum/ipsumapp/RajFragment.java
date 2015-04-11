@@ -37,6 +37,7 @@ import android.widget.TextView;
 import com.ar.ipsum.ipsumapp.Resources.*;
 import com.ar.ipsum.ipsumapp.Resources.Message;
 import com.ar.ipsum.ipsumapp.Utils.MessageJSONParser;
+import com.ar.ipsum.ipsumapp.Utils.onOrientationChanged;
 import com.ar.ipsum.ipsumapp.view.FloatingActionButton;
 import com.firebase.client.AuthData;
 import com.firebase.client.DataSnapshot;
@@ -68,7 +69,7 @@ import rajawali.RajawaliFragment;
  */
 
 
-public class RajFragment extends RajawaliFragment implements View.OnTouchListener, SharedPreferences.OnSharedPreferenceChangeListener{
+public class RajFragment extends RajawaliFragment implements View.OnTouchListener, SharedPreferences.OnSharedPreferenceChangeListener, onOrientationChanged {
 
 
     /** Output files will be saved as /sdcard/Pictures/cameratoo*.jpg */
@@ -122,6 +123,7 @@ public class RajFragment extends RajawaliFragment implements View.OnTouchListene
     private SensorView sense;
     private SharedPreferences prefs;
     private String id="";
+    private float[] Orientation=new float[3];
 
 
 
@@ -158,7 +160,7 @@ public class RajFragment extends RajawaliFragment implements View.OnTouchListene
         MainActivity main = (MainActivity) getActivity();
         sense = main.sense;
 
-        mRenderer = new Renderer(this.getActivity(), sense);
+        mRenderer = new Renderer(this.getActivity(), sense, msgs, Orientation);
         mRenderer.setSurfaceView(mSurfaceView);
 
         super.setRenderer(mRenderer);
@@ -375,6 +377,7 @@ public class RajFragment extends RajawaliFragment implements View.OnTouchListene
                         int i = map.size();
                         jObject = new JSONObject(map);
                         msgs = messageJSONParser.parse(jObject);
+                        mRenderer.onMessagesChange(msgs);
                     }
 
 
@@ -386,6 +389,12 @@ public class RajFragment extends RajawaliFragment implements View.OnTouchListene
         }
 
 
+    }
+
+    @Override
+    public void onOrientaionChange(float[] orientation) {
+        this.Orientation= orientation;
+        mRenderer.onOrientaionChange(orientation);
     }
 
 

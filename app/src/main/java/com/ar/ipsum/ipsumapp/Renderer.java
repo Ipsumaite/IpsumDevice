@@ -8,6 +8,8 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PorterDuff.Mode;
 
+import com.ar.ipsum.ipsumapp.Utils.onMessagesChanged;
+import com.ar.ipsum.ipsumapp.Utils.onOrientationChanged;
 import com.ar.ipsum.ipsumapp.representation.Quaternion;
 
 import java.text.SimpleDateFormat;
@@ -28,7 +30,7 @@ import rajawali.renderer.RajawaliRenderer;
 import rajawali.util.ObjectColorPicker;
 import rajawali.util.OnObjectPickedListener;
 
-public class Renderer extends RajawaliRenderer implements OnObjectPickedListener {
+public class Renderer extends RajawaliRenderer implements OnObjectPickedListener, onMessagesChanged, onOrientationChanged {
 	private DirectionalLight mLight;
 	private Object3D mSphere;
 	private Object3D mCube;
@@ -49,16 +51,19 @@ public class Renderer extends RajawaliRenderer implements OnObjectPickedListener
 	private SimpleDateFormat mDateFormat;
 	private int mFrameCount;
 	private boolean mShouldUpdateTexture;
+    private List<com.ar.ipsum.ipsumapp.Resources.Message> msgs= new ArrayList<com.ar.ipsum.ipsumapp.Resources.Message>();
 	//Sphere timeSphere;
 	//Sphere parentSphere;
 
 
 
-	public Renderer(Context context, SensorView sense) {
+	public Renderer(Context context, SensorView sense, List<com.ar.ipsum.ipsumapp.Resources.Message> msgs, float[] Orientation) {
 		super(context);
 		this.context =context;
 		this.sensor= sense;
 		setFrameRate(60);
+        this.msgs=msgs;
+        this.mOrientation= Orientation;
 		//ArtutActivity activity = (ArtutActivity) context;
 		//CardView cardView= (CardView) activity.findViewById(R.id.message_board);
 		//TextView textView= (TextView) activity.findViewById(R.id.message);
@@ -277,4 +282,14 @@ public class Renderer extends RajawaliRenderer implements OnObjectPickedListener
 		
 		
 	}
+
+    @Override
+    public void onMessagesChange(List<com.ar.ipsum.ipsumapp.Resources.Message> msgs) {
+        this.msgs= msgs;
+    }
+
+    @Override
+    public void onOrientaionChange(float[] orientation) {
+        this.mOrientation= orientation;
+    }
 }
