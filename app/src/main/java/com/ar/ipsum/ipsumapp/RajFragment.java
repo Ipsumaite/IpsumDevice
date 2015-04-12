@@ -12,6 +12,7 @@ import android.hardware.camera2.CameraDevice;
 import android.hardware.camera2.CameraManager;
 import android.hardware.camera2.CaptureRequest;
 import android.hardware.camera2.params.StreamConfigurationMap;
+import android.location.Location;
 import android.media.Image;
 import android.media.ImageReader;
 import android.os.Bundle;
@@ -37,6 +38,7 @@ import android.widget.TextView;
 import com.ar.ipsum.ipsumapp.Resources.*;
 import com.ar.ipsum.ipsumapp.Resources.Message;
 import com.ar.ipsum.ipsumapp.Utils.MessageJSONParser;
+import com.ar.ipsum.ipsumapp.Utils.onGPSChanged;
 import com.ar.ipsum.ipsumapp.Utils.onOrientationChanged;
 import com.ar.ipsum.ipsumapp.view.FloatingActionButton;
 import com.firebase.client.AuthData;
@@ -69,7 +71,7 @@ import rajawali.RajawaliFragment;
  */
 
 
-public class RajFragment extends RajawaliFragment implements View.OnTouchListener, SharedPreferences.OnSharedPreferenceChangeListener, onOrientationChanged {
+public class RajFragment extends RajawaliFragment implements View.OnTouchListener, SharedPreferences.OnSharedPreferenceChangeListener, onOrientationChanged, onGPSChanged {
 
 
     /** Output files will be saved as /sdcard/Pictures/cameratoo*.jpg */
@@ -124,6 +126,7 @@ public class RajFragment extends RajawaliFragment implements View.OnTouchListene
     private SharedPreferences prefs;
     private String id="";
     private float[] Orientation=new float[3];
+    private Location location;
 
 
 
@@ -136,6 +139,15 @@ public class RajFragment extends RajawaliFragment implements View.OnTouchListene
         /*mPreviewView = new FixedAspectSurfaceView(this.getActivity());
         mPreviewView.getHolder().addCallback(this);*/
         //prefs = PreferenceManager.getDefaultSharedPreferences(this.getActivity().getApplicationContext());
+        Bundle args = getArguments();
+        Double latitude=0.0;
+        Double longitude=0.0;
+
+    /*    if (args != null) {
+            latitude = args.getDouble("latitude");
+            longitude = args.getDouble("longitude");
+        }*/
+
         prefs =this.getActivity().getApplicationContext().getSharedPreferences(MainActivity.MyPREFERENCES,
                 Context.MODE_PRIVATE);
 
@@ -376,8 +388,10 @@ public class RajFragment extends RajawaliFragment implements View.OnTouchListene
                     if(map!=null) {
                         int i = map.size();
                         jObject = new JSONObject(map);
-                        msgs = messageJSONParser.parse(jObject);
-                        mRenderer.onMessagesChange(msgs);
+                        if (location != null) {
+                            msgs = completePosition(messageJSONParser.parse(jObject), location);
+                            mRenderer.onMessagesChange(msgs);
+                        }
                     }
 
 
@@ -394,7 +408,15 @@ public class RajFragment extends RajawaliFragment implements View.OnTouchListene
     @Override
     public void onOrientaionChange(float[] orientation) {
         this.Orientation= orientation;
-        mRenderer.onOrientaionChange(orientation);
+        if(mRenderer != null){
+            mRenderer.onOrientaionChange(orientation);
+        }
+
+    }
+
+    @Override
+    public void onGPSChange(Location location) {
+        this.location= location;
     }
 
 
@@ -636,5 +658,22 @@ public class RajFragment extends RajawaliFragment implements View.OnTouchListene
                 mCapture.close();
             }
         }
+    }
+
+    public List<Message> completePosition (List<Message> msgs, Location location){
+        List<Message> results= new ArrayList<Message>();
+        Message message= new Message();
+        for(int i=0; i<msgs.size();i++){
+            message=msgs.get(i);
+            Location loc= new Location("manual");
+            loc.setLatitude(message.getLatitude());
+            loc.setLongitude(message.getLongitude());
+
+            message.setDist(location.distanceTo(loc));
+            message.setBearing(location.bearingTo(loc));
+            results.add(message);
+        }
+
+        return results;
     }
 }

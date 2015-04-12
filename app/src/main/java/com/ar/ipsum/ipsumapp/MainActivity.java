@@ -62,6 +62,8 @@ public class MainActivity extends Activity implements onGPSChanged, onChannelsCh
     private LocationManager locationManager;
     private SensorManager sensors;
     public SensorView sense;
+    private double latitude=0;
+    private double longitude=0;
     //private Camera camera;
     private RajFragment raj= new RajFragment();
     private ChannelFragment cha= new ChannelFragment();
@@ -73,6 +75,7 @@ public class MainActivity extends Activity implements onGPSChanged, onChannelsCh
     public static final String id = "idfirebaseKey";
     public static final String lat = "latitude";
     public static final String lng = "longitude";
+
     SharedPreferences sharedpreferences;
     CameraManager mCameraManager;
     onGPSChanged mCallback;
@@ -266,6 +269,11 @@ public class MainActivity extends Activity implements onGPSChanged, onChannelsCh
             case 0:
                 fragment = new RajFragment();
                 raj = (RajFragment) fragment;
+                /*Bundle args=new Bundle();
+
+                args.putDouble(lat, latitude);
+                args.putDouble(lng, longitude);
+                raj.setArguments(args);*/
                 break;
             /*case 1:
                 fragment = new FindPeopleFragment();
@@ -403,6 +411,9 @@ public class MainActivity extends Activity implements onGPSChanged, onChannelsCh
 
 
         try {
+            latitude= location.getLatitude();
+            longitude= location.getLongitude();
+            raj.onGPSChange(location);
             presence(""+location.getLatitude(), ""+location.getLongitude());
 
         } catch (Exception e) {

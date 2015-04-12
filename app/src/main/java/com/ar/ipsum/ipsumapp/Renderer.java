@@ -73,9 +73,9 @@ public class Renderer extends RajawaliRenderer implements OnObjectPickedListener
 	}
 
 	protected void initScene() {
-		mOrientation=sensor.getRotationMatrix();
-		mQuat=sensor.getQuaternion();
-		messages=sensor.getMessages();
+		//mOrientation=sensor.getRotationMatrix();
+		//mQuat=sensor.getQuaternion();
+		//messages=sensor.getMessages();
 		mPicker = new ObjectColorPicker(this);
 		mPicker.setOnObjectPickedListener(this);
 		mLight = new DirectionalLight(1f, 0.2f, -1.0f); // set the direction
@@ -136,18 +136,18 @@ public class Renderer extends RajawaliRenderer implements OnObjectPickedListener
 		super.onDrawFrame(glUnused);
 		mOrientation=sensor.getRotationMatrix();
 		mQuat=sensor.getQuaternion();
-		messages=sensor.getMessages();
-		if (obj.size()<messages.size()){
-			iniciar(messages.size()-obj.size());
-			iniciar_text(messages.size()-obj_text.size());
+		//messages=sensor.getMessages();
+		if (obj.size()<msgs.size()){
+			iniciar(msgs.size()-obj.size());
+			iniciar_text(msgs.size()-obj_text.size());
 		}
-		for(int i=0; i<messages.size();i++){
+		for(int i=0; i<msgs.size();i++){
 			int n=i;
-			Message msg= messages.get(i);
+			com.ar.ipsum.ipsumapp.Resources.Message msg= msgs.get(i);
 			
-			float bear_x=msg.dist/10*(float) (Math.sin(Math.toRadians(msg.Bearing)));
-			float bear_z=msg.dist/10*(float) (-1*Math.cos(Math.toRadians(msg.Bearing)));
-			float bear_y=msg.alt/10;
+			float bear_x=msg.getDist()/10*(float) (Math.sin(Math.toRadians(msg.getBearing())));
+			float bear_z=msg.getDist()/10*(float) (-1*Math.cos(Math.toRadians(msg.getBearing())));
+			float bear_y=msg.getAlt()/10;
 
 
 			obj.get(i).setPosition(bear_x, 0, bear_z);
