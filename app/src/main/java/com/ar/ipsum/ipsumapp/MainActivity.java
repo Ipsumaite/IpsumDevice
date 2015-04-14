@@ -8,7 +8,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
-import android.hardware.Camera;
 import android.hardware.SensorManager;
 import android.hardware.camera2.CameraManager;
 import android.location.Location;
@@ -27,11 +26,11 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.ar.ipsum.ipsumapp.Resources.Channel;
+import com.ar.ipsum.ipsumapp.Utils.AsyncHttpGet_credentials;
 import com.ar.ipsum.ipsumapp.Utils.AsyncHttpPost;
 import com.ar.ipsum.ipsumapp.Utils.AsyncHttpPost_presence;
 import com.ar.ipsum.ipsumapp.Utils.onChannelsChanged;
 import com.ar.ipsum.ipsumapp.Utils.onGPSChanged;
-import com.ar.ipsum.ipsumapp.Utils.AsyncHttpGet_credentials;
 import com.ar.ipsum.ipsumapp.Utils.onOrientationChanged;
 import com.ar.ipsum.ipsumapp.view.NavDrawerItem;
 import com.ar.ipsum.ipsumapp.view.NavDrawerListAdapter;
@@ -269,11 +268,11 @@ public class MainActivity extends Activity implements onGPSChanged, onChannelsCh
             case 0:
                 fragment = new RajFragment();
                 raj = (RajFragment) fragment;
-                /*Bundle args=new Bundle();
+                Bundle args=new Bundle();
 
                 args.putDouble(lat, latitude);
                 args.putDouble(lng, longitude);
-                raj.setArguments(args);*/
+                raj.setArguments(args);
                 break;
             /*case 1:
                 fragment = new FindPeopleFragment();
@@ -285,11 +284,11 @@ public class MainActivity extends Activity implements onGPSChanged, onChannelsCh
             case 3:
                 fragment = new LoginFragment();
                 break;
-            /*case 4:
-                fragment = new CommunityFragment();
+            case 4:
+                fragment = new MessageFragment();
                 break;
 
-             case 5:
+             /*case 5:
                 fragment = new WhatsHotFragment();
                 break;
              */

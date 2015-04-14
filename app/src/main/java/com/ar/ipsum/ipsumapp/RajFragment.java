@@ -143,10 +143,10 @@ public class RajFragment extends RajawaliFragment implements View.OnTouchListene
         Double latitude=0.0;
         Double longitude=0.0;
 
-    /*    if (args != null) {
+        if (args != null) {
             latitude = args.getDouble("latitude");
             longitude = args.getDouble("longitude");
-        }*/
+        }
 
         prefs =this.getActivity().getApplicationContext().getSharedPreferences(MainActivity.MyPREFERENCES,
                 Context.MODE_PRIVATE);

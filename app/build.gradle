@@ -29,6 +29,7 @@ dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile 'com.android.support:support-v4:21.0.3'
     compile project(':rajawali')
+    compile 'com.google.android.gms:play-services:7.0.0'
     compile 'com.android.support:cardview-v7:21.0.3'
     compile 'com.firebase:firebase-client-android:2.2.1'
     compile 'com.google.code.gson:gson:2.3.1'
