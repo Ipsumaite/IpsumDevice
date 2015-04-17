@@ -7,8 +7,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.MapsInitializer;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 
 /**
@@ -69,7 +75,7 @@ public class MessageFragment extends Fragment {
 
         View view=inflater.inflate(R.layout.fragment_message, container, false);
 
-        /*mMapView = (MapView) view.findViewById(R.id.mapView);
+        mMapView = (MapView) view.findViewById(R.id.map);
         mMapView.onCreate(savedInstanceState);
 
         mMapView.onResume();// needed to get the map to display immediately
@@ -98,7 +104,7 @@ public class MessageFragment extends Fragment {
         CameraPosition cameraPosition = new CameraPosition.Builder()
                 .target(new LatLng(17.385044, 78.486671)).zoom(12).build();
         googleMap.animateCamera(CameraUpdateFactory
-                .newCameraPosition(cameraPosition));*/
+                .newCameraPosition(cameraPosition));
         return view;
     }
 

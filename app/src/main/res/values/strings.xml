@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">IsumApp</string>
+    <string name="app_name">IpsumApp</string>
     <string name="title_section1">Section 1</string>
     <string name="title_section2">Section 2</string>
     <string name="title_section3">Section 3</string>
@@ -16,7 +16,7 @@
         <item >Publish</item>
         <item >Channels</item>
         <item >Login</item>
-        <item >Pages</item>
+        <item >WriteMessage</item>
         <item >Preferences</item>
     </string-array>
 
