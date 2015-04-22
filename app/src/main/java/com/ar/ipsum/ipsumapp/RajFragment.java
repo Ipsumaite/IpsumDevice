@@ -35,20 +35,17 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.ar.ipsum.ipsumapp.Resources.*;
 import com.ar.ipsum.ipsumapp.Resources.Message;
 import com.ar.ipsum.ipsumapp.Utils.MessageJSONParser;
 import com.ar.ipsum.ipsumapp.Utils.onGPSChanged;
 import com.ar.ipsum.ipsumapp.Utils.onOrientationChanged;
 import com.ar.ipsum.ipsumapp.view.FloatingActionButton;
-import com.firebase.client.AuthData;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
@@ -181,14 +178,6 @@ public class RajFragment extends RajawaliFragment implements View.OnTouchListene
 
         Firebase.setAndroidContext(main);
         myFirebaseRef= new Firebase(FIREBASEURL);
-        AuthData authData= myFirebaseRef.getAuth();
-        //myFirebaseRef.auth
-
-
-
-
-
-
     }
 
     @Override
@@ -208,11 +197,10 @@ public class RajFragment extends RajawaliFragment implements View.OnTouchListene
 
         params = new RelativeLayout.LayoutParams(size, size);
 
-        //mLayout.addView(mPreviewView);
+        mLayout.addView(mSurfaceView);
         mLayout.addView(mSurfaceView1);
 
-        mLayout.addView(mSurfaceView);
-
+        ((View) mSurfaceView).bringToFront();
 
         /*android:id="@+id/preview"
         android:layout_width="0dp"
@@ -398,6 +386,8 @@ public class RajFragment extends RajawaliFragment implements View.OnTouchListene
 
                 }
                 @Override public void onCancelled(FirebaseError error) { }
+
+
             });
 
         }

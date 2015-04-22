@@ -51,7 +51,7 @@ public class Renderer extends RajawaliRenderer implements OnObjectPickedListener
 	private SimpleDateFormat mDateFormat;
 	private int mFrameCount;
 	private boolean mShouldUpdateTexture;
-    private List<com.ar.ipsum.ipsumapp.Resources.Message> msgs= new ArrayList<com.ar.ipsum.ipsumapp.Resources.Message>();
+    List<com.ar.ipsum.ipsumapp.Resources.Message> msgs= new ArrayList<com.ar.ipsum.ipsumapp.Resources.Message>();
 	//Sphere timeSphere;
 	//Sphere parentSphere;
 
@@ -132,18 +132,18 @@ public class Renderer extends RajawaliRenderer implements OnObjectPickedListener
 
 	public void onDrawFrame(GL10 glUnused) {
 
-
+        List<com.ar.ipsum.ipsumapp.Resources.Message> mMessages=msgs;
 		super.onDrawFrame(glUnused);
 		mOrientation=sensor.getRotationMatrix();
 		mQuat=sensor.getQuaternion();
-		//messages=sensor.getMessages();
-		if (obj.size()<msgs.size()){
-			iniciar(msgs.size()-obj.size());
-			iniciar_text(msgs.size()-obj_text.size());
+
+		if (obj.size()<mMessages.size()){
+			iniciar(mMessages.size()-obj.size());
+			//iniciar_text(mMessages.size()-obj_text.size());
 		}
-		for(int i=0; i<msgs.size();i++){
+		for(int i=0; i<mMessages.size();i++){
 			int n=i;
-			com.ar.ipsum.ipsumapp.Resources.Message msg= msgs.get(i);
+			com.ar.ipsum.ipsumapp.Resources.Message msg= mMessages.get(i);
 			
 			float bear_x=msg.getDist()/10*(float) (Math.sin(Math.toRadians(msg.getBearing())));
 			float bear_z=msg.getDist()/10*(float) (-1*Math.cos(Math.toRadians(msg.getBearing())));
@@ -285,11 +285,22 @@ public class Renderer extends RajawaliRenderer implements OnObjectPickedListener
 
     @Override
     public void onMessagesChange(List<com.ar.ipsum.ipsumapp.Resources.Message> msgs) {
-        this.msgs= msgs;
+        synchronized(this){
+            if (msgs.size()>0){
+                this.msgs.clear();
+                for(int i=0; i<msgs.size();i++){
+                    this.msgs.add(msgs.get(i));
+                }
+            }
+        }
+
     }
 
     @Override
     public void onOrientaionChange(float[] orientation) {
-        this.mOrientation= orientation;
+        synchronized (this){
+            this.mOrientation= orientation;
+        }
+
     }
 }

@@ -34,13 +34,26 @@ import com.ar.ipsum.ipsumapp.Utils.onGPSChanged;
 import com.ar.ipsum.ipsumapp.Utils.onOrientationChanged;
 import com.ar.ipsum.ipsumapp.view.NavDrawerItem;
 import com.ar.ipsum.ipsumapp.view.NavDrawerListAdapter;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.FusedLocationProviderApi;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
 import com.google.gson.Gson;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 
 
-public class MainActivity extends Activity implements onGPSChanged, onChannelsChanged, onOrientationChanged {
+public class MainActivity extends Activity implements onChannelsChanged, onOrientationChanged,LocationListener,
+        GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener {
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
@@ -75,17 +88,37 @@ public class MainActivity extends Activity implements onGPSChanged, onChannelsCh
     public static final String lat = "latitude";
     public static final String lng = "longitude";
 
+    private static final String TAG = "LocationActivity";
+    private static final long INTERVAL = 1000 * 10;
+    private static final long FASTEST_INTERVAL = 1000 * 5;
+
+    LocationRequest mLocationRequest;
+    GoogleApiClient mGoogleApiClient;
+
     SharedPreferences sharedpreferences;
     CameraManager mCameraManager;
     onGPSChanged mCallback;
     onOrientationChanged mCallback1;
     private ArrayList<Channel> channels= new ArrayList<Channel>();
     private float[] Orientation= new float[3];
+    private FusedLocationProviderApi fusedLocationProviderApi;
+    Location mCurrentLocation;
+    String mLastUpdateTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        fusedLocationProviderApi = LocationServices.FusedLocationApi;
+        if (!isGooglePlayServicesAvailable()) {
+            finish();
+        }
+        createLocationRequest();
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addApi(LocationServices.API)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .build();
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         sensors = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
@@ -102,12 +135,7 @@ public class MainActivity extends Activity implements onGPSChanged, onChannelsCh
             mLayout.addView(arDisplay);
         }*/
         Activity activity = this;
-        try {
-            mCallback = (onGPSChanged) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
-                    + " must implement OnHeadlineSelectedListener");
-        }
+
         try {
             mCallback1 = (onOrientationChanged) activity;
         } catch (ClassCastException e) {
@@ -116,7 +144,7 @@ public class MainActivity extends Activity implements onGPSChanged, onChannelsCh
         }
 
         //Initiate orientation class
-        sense= new SensorView(locationManager, sensors, mCallback, mCallback1);
+        sense= new SensorView(sensors, mCallback1);
         sense.start();
 
         mTitle = mDrawerTitle = getTitle();
@@ -186,6 +214,83 @@ public class MainActivity extends Activity implements onGPSChanged, onChannelsCh
             displayView(0);
         }
     }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Log.d(TAG, "onStart fired ..............");
+        mGoogleApiClient.connect();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        Log.d(TAG, "onStop fired ..............");
+        mGoogleApiClient.disconnect();
+        Log.d(TAG, "isConnected ...............: " + mGoogleApiClient.isConnected());
+    }
+
+    private boolean isGooglePlayServicesAvailable() {
+        int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
+        if (ConnectionResult.SUCCESS == status) {
+            return true;
+        } else {
+            GooglePlayServicesUtil.getErrorDialog(status, this, 0).show();
+            return false;
+        }
+    }
+
+    @Override
+    public void onConnected(Bundle bundle) {
+        Log.d(TAG, "onConnected - isConnected ...............: " + mGoogleApiClient.isConnected());
+        startLocationUpdates();
+    }
+
+    protected void startLocationUpdates() {
+        PendingResult<Status> pendingResult = LocationServices.FusedLocationApi.requestLocationUpdates(
+                mGoogleApiClient, mLocationRequest, this);
+        Log.d(TAG, "Location update started ..............: ");
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+        Log.d(TAG, "Connection failed: " + connectionResult.toString());
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        Log.d(TAG, "Firing onLocationChanged..............................................");
+        mCurrentLocation = location;
+        mLastUpdateTime = DateFormat.getTimeInstance().format(new Date());
+        try {
+            latitude= mCurrentLocation.getLatitude();
+            longitude= mCurrentLocation.getLongitude();
+            raj.onGPSChange(mCurrentLocation);
+            presence(""+mCurrentLocation.getLatitude(), ""+mCurrentLocation.getLongitude());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        stopLocationUpdates();
+    }
+
+    protected void stopLocationUpdates() {
+        LocationServices.FusedLocationApi.removeLocationUpdates(
+                mGoogleApiClient, this);
+        Log.d(TAG, "Location update stopped .......................");
+    }
+
 
     @Override
     public void onChannelChange(ArrayList<Channel> channels) {
@@ -405,21 +510,15 @@ public class MainActivity extends Activity implements onGPSChanged, onChannelsCh
         return isEmailValid && isPasswordValid;
     }
 
-    @Override
-    public void onGPSChange(Location location) {
 
 
-        try {
-            latitude= location.getLatitude();
-            longitude= location.getLongitude();
-            raj.onGPSChange(location);
-            presence(""+location.getLatitude(), ""+location.getLongitude());
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
+    protected void createLocationRequest() {
+        mLocationRequest = new LocationRequest();
+        mLocationRequest.setInterval(INTERVAL);
+        mLocationRequest.setFastestInterval(FASTEST_INTERVAL);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
     }
+
 
 
 
