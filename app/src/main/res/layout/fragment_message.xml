@@ -6,37 +6,15 @@
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:inputType="textMultiLine"
         android:ems="10"
         android:id="@+id/body"
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
-        android:layout_below="@+id/lng"
-        android:layout_marginTop="10dp"
-        android:elegantTextHeight="true"
-        android:nestedScrollingEnabled="true" />
-
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="numberDecimal"
-        android:ems="10"
-        android:id="@+id/lat"
-        android:layout_below="@+id/spinner"
-        android:layout_alignParentStart="true"
-        android:editable="false"
-        android:enabled="false"
-        android:focusable="false" />
-
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="numberDecimal"
-        android:ems="10"
-        android:id="@+id/lng"
-        android:layout_below="@+id/lat"
-        android:layout_alignParentStart="true"
-        android:enabled="false" />
+        android:elegantTextHeight="false"
+        android:nestedScrollingEnabled="true"
+        android:singleLine="false"
+        android:layout_toStartOf="@+id/button"
+        android:inputType="textShortMessage" />
 
     <Spinner
         android:layout_width="wrap_content"
@@ -44,14 +22,25 @@
         android:id="@+id/spinner"
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true"
-        android:layout_toStartOf="@+id/map" />
+        android:layout_toStartOf="@+id/map"
+        android:layout_alignParentEnd="true" />
 
     <com.google.android.gms.maps.MapView
         android:id="@+id/map"
         android:layout_width="100dp"
         android:layout_height="200dp"
-        android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentTop="true"
-        android:layout_toEndOf="@+id/body" />
+        android:layout_toEndOf="@+id/body"
+        android:layout_below="@+id/spinner"
+        android:layout_alignParentStart="true"
+        android:layout_above="@+id/body" />
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="New Button"
+        android:id="@+id/button"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true" />
 </RelativeLayout>

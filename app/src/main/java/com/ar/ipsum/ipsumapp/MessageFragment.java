@@ -102,7 +102,7 @@ public class MessageFragment extends Fragment {
 
         // create marker
         MarkerOptions marker = new MarkerOptions().position(
-                new LatLng(latitude, longitude)).title("Hello Maps");
+                new LatLng(latitude, longitude)).title("Lat: " +latitude + " Lng: " + longitude);
 
         // Changing marker icon
         marker.icon(BitmapDescriptorFactory
@@ -115,10 +115,6 @@ public class MessageFragment extends Fragment {
         googleMap.animateCamera(CameraUpdateFactory
                 .newCameraPosition(cameraPosition));
 
-        lat= (TextView) view.findViewById(R.id.lat);
-        lng= (TextView) view.findViewById(R.id.lng);
-        lat.setText("Latitude: " + latitude);
-        lng.setText("Longitude: " + longitude);
 
         return view;
     }
