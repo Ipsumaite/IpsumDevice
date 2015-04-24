@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -36,6 +37,12 @@ public class MessageFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
+    private double latitude= 0.0;
+    private double longitude= 0.0;
+
+    TextView lat;
+    TextView lng;
+
 
     /**
      * Use this factory method to create a new instance of
@@ -63,9 +70,12 @@ public class MessageFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            latitude = getArguments().getDouble("latitude");
+            longitude = getArguments().getDouble("longitude");
         }
+
+
+
     }
 
     @Override
@@ -88,8 +98,7 @@ public class MessageFragment extends Fragment {
 
         googleMap = mMapView.getMap();
         // latitude and longitude
-        double latitude = 17.385044;
-        double longitude = 78.486671;
+
 
         // create marker
         MarkerOptions marker = new MarkerOptions().position(
@@ -102,9 +111,15 @@ public class MessageFragment extends Fragment {
         // adding marker
         googleMap.addMarker(marker);
         CameraPosition cameraPosition = new CameraPosition.Builder()
-                .target(new LatLng(17.385044, 78.486671)).zoom(12).build();
+                .target(new LatLng(latitude, longitude)).zoom(12).build();
         googleMap.animateCamera(CameraUpdateFactory
                 .newCameraPosition(cameraPosition));
+
+        lat= (TextView) view.findViewById(R.id.lat);
+        lng= (TextView) view.findViewById(R.id.lng);
+        lat.setText("Latitude: " + latitude);
+        lng.setText("Longitude: " + longitude);
+
         return view;
     }
 

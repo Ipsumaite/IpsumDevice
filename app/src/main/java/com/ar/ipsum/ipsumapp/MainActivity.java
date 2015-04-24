@@ -79,6 +79,7 @@ public class MainActivity extends Activity implements onChannelsChanged, onOrien
     //private Camera camera;
     private RajFragment raj= new RajFragment();
     private ChannelFragment cha= new ChannelFragment();
+    private MessageFragment msg= new MessageFragment();
     public static final String MyPREFERENCES = "MyPrefs" ;
     public static final String name = "nameKey";
     public static final String pass = "passwordKey";
@@ -369,11 +370,12 @@ public class MainActivity extends Activity implements onChannelsChanged, onOrien
     private void displayView(int position) {
         // update the main content by replacing fragments
         Fragment fragment = null;
+        Bundle args=new Bundle();
         switch (position) {
             case 0:
                 fragment = new RajFragment();
                 raj = (RajFragment) fragment;
-                Bundle args=new Bundle();
+
 
                 args.putDouble(lat, latitude);
                 args.putDouble(lng, longitude);
@@ -391,6 +393,10 @@ public class MainActivity extends Activity implements onChannelsChanged, onOrien
                 break;
             case 4:
                 fragment = new MessageFragment();
+                msg= (MessageFragment) fragment;
+                args.putDouble(lat, latitude);
+                args.putDouble(lng, longitude);
+                msg.setArguments(args);
                 break;
 
              /*case 5:
