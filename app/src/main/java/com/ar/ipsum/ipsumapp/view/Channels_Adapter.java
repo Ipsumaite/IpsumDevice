@@ -70,12 +70,13 @@ public class Channels_Adapter extends ArrayAdapter<Channel> {
         }else {
             premium.setText("Free");
         }
+        subscribed.setChecked(channel.getSubscribed());
 
         subscribed.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                if(subscribed.isChecked()){
+                if(!subscribed.isChecked()){
                     //Subscrever
 
 

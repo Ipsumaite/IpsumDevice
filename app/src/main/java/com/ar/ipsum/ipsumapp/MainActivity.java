@@ -306,6 +306,7 @@ public class MainActivity extends Activity implements onChannelsChanged, onOrien
 
         try {
             cha.onChannelChange(channels);
+            msg.onChannelChange(channels);
         } catch (Exception e) {
             e.printStackTrace();
         }

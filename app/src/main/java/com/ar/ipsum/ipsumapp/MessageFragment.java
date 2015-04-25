@@ -2,12 +2,17 @@ package com.ar.ipsum.ipsumapp;
 
 
 import android.app.Fragment;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.ar.ipsum.ipsumapp.Resources.Channel;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -16,6 +21,11 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 
 
 /**
@@ -39,9 +49,16 @@ public class MessageFragment extends Fragment {
 
     private double latitude= 0.0;
     private double longitude= 0.0;
+    private ArrayList<Channel> channels;
+    private Channel channel;
 
-    TextView lat;
-    TextView lng;
+    Spinner spinner_channel;
+
+    ArrayAdapter<String> adapter1;
+    String[] channel_items=null;
+
+    SharedPreferences sharedpreferences;
+    public static final String MyPREFERENCES = "MyPrefs" ;
 
 
     /**
@@ -85,6 +102,33 @@ public class MessageFragment extends Fragment {
 
         View view=inflater.inflate(R.layout.fragment_message, container, false);
 
+        spinner_channel = (Spinner) view.findViewById(R.id.spinner_channel);
+
+        sharedpreferences=getActivity().getSharedPreferences(MyPREFERENCES,
+                Context.MODE_PRIVATE);
+        Gson gson = new Gson();
+        String json = sharedpreferences.getString("Channels","");
+        Type type = new TypeToken<ArrayList<Channel>>(){}.getType();
+        this.channels= gson.fromJson(json, type);
+        if (this.channels==null){
+            this.channels= new ArrayList<Channel>();
+        }
+        if (channels.size()>0){
+            channel_items = new String[channels.size()];
+            for (int i=0; i< channels.size(); i++){
+                channel_items[i]=channels.get(i).getName();
+            }
+        }else{
+            channel_items = new String[1];
+            channel_items[0]= "Empty";
+        }
+
+
+        adapter1 = new ArrayAdapter<String>(this.getActivity(),
+                android.R.layout.simple_spinner_item, channel_items);
+        adapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner_channel.setAdapter(adapter1);
+
         mMapView = (MapView) view.findViewById(R.id.map);
         mMapView.onCreate(savedInstanceState);
 
@@ -116,31 +160,79 @@ public class MessageFragment extends Fragment {
                 .newCameraPosition(cameraPosition));
 
 
+        googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+
+            @Override
+            public void onMapClick(LatLng latLng) {
+
+                // Creating a marker
+                MarkerOptions markerOptions = new MarkerOptions();
+
+                // Setting the position for the marker
+                markerOptions.position(latLng);
+
+                // Setting the title for the marker.
+                // This will be displayed on taping the marker
+                markerOptions.title(latLng.latitude + " : " + latLng.longitude);
+
+                markerOptions.icon(BitmapDescriptorFactory
+                        .defaultMarker(BitmapDescriptorFactory.HUE_ROSE));
+
+                // Clears the previously touched position
+                googleMap.clear();
+
+                // Animating to the touched position
+                googleMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
+
+                // Placing a marker on the touched position
+                googleMap.addMarker(markerOptions);
+
+                latitude= latLng.latitude;
+                longitude= latLng.longitude;
+            }
+        });
+
+
         return view;
     }
+
+
 
     @Override
     public void onResume() {
         super.onResume();
-        //mMapView.onResume();
+        mMapView.onResume();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        //mMapView.onPause();
+        mMapView.onPause();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        //mMapView.onDestroy();
+        mMapView.onDestroy();
     }
 
     @Override
     public void onLowMemory() {
         super.onLowMemory();
-        //mMapView.onLowMemory();
+        mMapView.onLowMemory();
+    }
+
+    public void onChannelChange(ArrayList<Channel> channels) {
+        this.channels.clear();
+        this.channels.addAll(channels);
+        channel_items = new String[channels.size()];
+        for (int i=0; i< channels.size(); i++){
+            channel_items[i]=channels.get(i).getName();
+        }
+        adapter1 = new ArrayAdapter<String>(this.getActivity(),
+                android.R.layout.simple_spinner_item, channel_items);
+        adapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner_channel.setAdapter(adapter1);
     }
 
 }
