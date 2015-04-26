@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.ar.ipsum.ipsumapp.LoginReply;
 import com.ar.ipsum.ipsumapp.MainActivity;
@@ -115,15 +116,6 @@ public class AsyncHttpPost  extends AsyncTask<String, String, String> {
                     AsyncHttpGet_credentials asyncHttpGet = new AsyncHttpGet_credentials(data, mContext);
                     asyncHttpGet.execute("http://ipsumapi.herokuapp.com/api/accountID/");
 
-                    HashMap<String, String> data1 = new HashMap<String, String>();
-
-                    data1.put("header_token", mToken);
-                    //data.put("type", "presence");
-                    data1.put("email", user1);
-                    data1.put("latitude", "38.731271");
-                    data1.put("longitude",  "-9.146301");
-                    AsyncHttpPost_presence asyncHttpPost_presence = new AsyncHttpPost_presence(data1, mContext);
-                    asyncHttpPost_presence.execute("http://ipsumapi.herokuapp.com/api/presence");
 
                     String mMethod="Get";
                     int mFlag= 0;
@@ -134,6 +126,9 @@ public class AsyncHttpPost  extends AsyncTask<String, String, String> {
                     editor.putString(tokenKey,mToken);
                     editor.putString(state,mStatus);
                     editor.commit();
+
+                    Toast.makeText(mContext,
+                            user1 + " is logged in!", Toast.LENGTH_SHORT).show();
 
                 }
 

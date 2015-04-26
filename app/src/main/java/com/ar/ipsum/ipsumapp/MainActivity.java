@@ -272,7 +272,12 @@ public class MainActivity extends Activity implements onChannelsChanged, onOrien
             latitude= mCurrentLocation.getLatitude();
             longitude= mCurrentLocation.getLongitude();
             raj.onGPSChange(mCurrentLocation);
-            presence(""+mCurrentLocation.getLatitude(), ""+mCurrentLocation.getLongitude());
+            sharedpreferences=getSharedPreferences(MyPREFERENCES,
+                    Context.MODE_PRIVATE);
+            String status=sharedpreferences.getString("state","");
+            if (status.equals("Authenticated")){
+                presence(""+mCurrentLocation.getLatitude(), ""+mCurrentLocation.getLongitude());
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -474,6 +479,8 @@ public class MainActivity extends Activity implements onChannelsChanged, onOrien
             data.put("password", pass1);
             AsyncHttpPost asyncHttpPost = new AsyncHttpPost(data, this);
             asyncHttpPost.execute("http://ipsumapi.herokuapp.com/login");
+            Toast.makeText(getBaseContext(),
+                    "Accessing servers...", Toast.LENGTH_SHORT).show();
         }
     }
 
