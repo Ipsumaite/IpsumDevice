@@ -4,9 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.Toast;
 
-import com.ar.ipsum.ipsumapp.IDAnswer;
-import com.ar.ipsum.ipsumapp.MainActivity;
 import com.ar.ipsum.ipsumapp.Resources.Channel;
 
 import org.apache.http.HttpEntity;
@@ -85,6 +84,9 @@ public class AsyncHttpGet_channels extends AsyncTask<String, String, String> {
 
 
                 return data;
+            }else {
+                Toast.makeText(mContext,
+                        "Failed to retrieve channels", Toast.LENGTH_SHORT).show();
             }
 
 

@@ -101,6 +101,8 @@ public class LoginFragment extends Fragment {
                     "Login or password is incorrect", Toast.LENGTH_SHORT).show();
         } else {
             // do login request
+            Toast.makeText(getActivity().getBaseContext(),
+                    "Login request...", Toast.LENGTH_SHORT).show();
             SharedPreferences.Editor editor = sharedpreferences.edit();
             editor.putString(name, user.getText().toString());
             editor.putString(pass, password.getText().toString());
@@ -145,14 +147,25 @@ public class LoginFragment extends Fragment {
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
             validateEmail(s.toString());
-            updateLoginButtonState();
+            //updateLoginButtonState();
         }
 
         @Override
         public void afterTextChanged(Editable s) {
 
         }
+
+
     });
+
+        user.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                onLoginClicked();
+            }
+        });
+
+
         password.addTextChangedListener(new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -162,7 +175,7 @@ public class LoginFragment extends Fragment {
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
             validatePassword(s.toString());
-            updateLoginButtonState();
+            //updateLoginButtonState();
         }
 
         @Override
@@ -171,15 +184,8 @@ public class LoginFragment extends Fragment {
         }
     });
 
-    start = (Button) view.findViewById(R.id.start_button);
-    start.setEnabled(false); // default state should be disabled
-    start.setOnClickListener(new View.OnClickListener() {
 
-        @Override
-        public void onClick(View v) {
-            onLoginClicked();
-        }
-    });
+
 
         password.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -208,15 +214,6 @@ public class LoginFragment extends Fragment {
     private void validateEmail(String text) {
         isEmailValid = Patterns.EMAIL_ADDRESS.matcher(text).matches();
     }
-
-    private void updateLoginButtonState() {
-        if(isEmailValid && isPasswordValid) {
-            start.setEnabled(true);
-        } else {
-            start.setEnabled(false);
-        }
-    }
-
 
 
 }

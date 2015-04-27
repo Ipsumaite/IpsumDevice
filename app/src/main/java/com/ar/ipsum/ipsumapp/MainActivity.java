@@ -80,6 +80,7 @@ public class MainActivity extends Activity implements onChannelsChanged, onOrien
     private RajFragment raj= new RajFragment();
     private ChannelFragment cha= new ChannelFragment();
     private MessageFragment msg= new MessageFragment();
+    private PublishFragment pub= new PublishFragment();
     public static final String MyPREFERENCES = "MyPrefs" ;
     public static final String name = "nameKey";
     public static final String pass = "passwordKey";
@@ -275,7 +276,7 @@ public class MainActivity extends Activity implements onChannelsChanged, onOrien
             sharedpreferences=getSharedPreferences(MyPREFERENCES,
                     Context.MODE_PRIVATE);
             String status=sharedpreferences.getString("state","");
-            if (status.equals("Authenticated")){
+            if (status.equals("Authenticated") || status.equals("Registered")){
                 presence(""+mCurrentLocation.getLatitude(), ""+mCurrentLocation.getLongitude());
             }
 
@@ -312,6 +313,7 @@ public class MainActivity extends Activity implements onChannelsChanged, onOrien
         try {
             cha.onChannelChange(channels);
             msg.onChannelChange(channels);
+            pub.onChannelChange(channels);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -387,9 +389,13 @@ public class MainActivity extends Activity implements onChannelsChanged, onOrien
                 args.putDouble(lng, longitude);
                 raj.setArguments(args);
                 break;
-            /*case 1:
-                fragment = new FindPeopleFragment();
-                break;*/
+            case 1:
+                fragment = new PublishFragment();
+                pub= (PublishFragment) fragment;
+                args.putDouble(lat, latitude);
+                args.putDouble(lng, longitude);
+                pub.setArguments(args);
+                break;
             case 2:
                 fragment = new ChannelFragment();
                 cha= (ChannelFragment) fragment;

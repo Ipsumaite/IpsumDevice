@@ -15,7 +15,9 @@
         android:layout_gravity="center"
         android:layout_marginBottom="20dp"
         android:hint="user@mail.com"
-        android:singleLine="true" />
+        android:singleLine="true"
+        android:focusable="true"
+        android:focusableInTouchMode="true" />
 
     <EditText
         android:layout_width="wrap_content"
@@ -27,15 +29,8 @@
         android:layout_marginTop="20dp"
         android:password="true"
         android:hint="password"
-        android:singleLine="true" />
-
-    <Button
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Start"
-        android:id="@+id/start_button"
-        android:layout_gravity="center_horizontal|bottom"
-        android:layout_marginBottom="20dp" />
+        android:singleLine="true"
+        android:focusable="true"
+        android:focusableInTouchMode="true" />
 
 </FrameLayout>
