@@ -12,10 +12,8 @@ import android.widget.TextView;
 import com.ar.ipsum.ipsumapp.MainActivity;
 import com.ar.ipsum.ipsumapp.R;
 import com.ar.ipsum.ipsumapp.Resources.Channel;
-import com.ar.ipsum.ipsumapp.Utils.AsyncHttpGet_channels;
 import com.ar.ipsum.ipsumapp.Utils.AsyncHttp_channels;
 
-import org.apache.http.entity.StringEntity;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -79,7 +77,7 @@ public class Channels_Adapter extends ArrayAdapter<Channel> {
                 if(!subscribed.isChecked()){
                     //Subscrever
 
-
+                    subscribed.setChecked(false);
                     //request user's credentials
                     String user1=sharedpreferences.getString(name,"");
                     String mToken=sharedpreferences.getString(tokenKey,"");
@@ -119,12 +117,13 @@ public class Channels_Adapter extends ArrayAdapter<Channel> {
                     }
                     message = object.toString();
                     data.put("message", message);
-
+                    data.put("email", user1);
                     String mMethod= "Put";
                     int mFlag=0;
                     AsyncHttp_channels asyncHttp_channels = new AsyncHttp_channels(data, context, mMethod, mFlag);
                     asyncHttp_channels.execute("http://ipsumapi.herokuapp.com/api/subscriptions/");
                 }else{
+                    subscribed.setChecked(true);
                     //request user's credentials
                     String user1=sharedpreferences.getString(name,"");
                     String mToken=sharedpreferences.getString(tokenKey,"");

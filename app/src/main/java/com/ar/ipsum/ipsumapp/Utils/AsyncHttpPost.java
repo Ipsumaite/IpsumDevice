@@ -71,9 +71,6 @@ public class AsyncHttpPost  extends AsyncTask<String, String, String> {
                 if(statusLine.getStatusCode() == HttpURLConnection.HTTP_OK){
                     HttpEntity entity = response.getEntity();
                     jsonstr = EntityUtils.toString(entity);
-                }else {
-                    Toast.makeText(mContext,
-                            "Login failed", Toast.LENGTH_SHORT).show();
                 }
             }
             catch (UnsupportedEncodingException e) {

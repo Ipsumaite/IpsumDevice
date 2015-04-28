@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.ar.ipsum.ipsumapp.Resources.Channel;
 
@@ -11,7 +12,6 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
@@ -33,6 +33,8 @@ public class AsyncHttp_channels extends AsyncTask<String, String, String> {
     private Context mContext;
     private String mMethod;
     private int mFlag;
+    private String token="";
+    private String email="";
     public static final String tokenKey = "tokenKey";
     public static final String state = "state";
     public static final String name = "nameKey";
@@ -45,6 +47,7 @@ public class AsyncHttp_channels extends AsyncTask<String, String, String> {
         channelsChanged= (onChannelsChanged) mContext;
         mMethod= method;
         mFlag= flag;
+
     }
 
 
@@ -57,8 +60,8 @@ public class AsyncHttp_channels extends AsyncTask<String, String, String> {
     @Override
     protected String doInBackground(String... params) {
         String data="";
-        String token="";
-        String email="";
+        token="";
+        email="";
         String message="";
 
 
@@ -145,7 +148,18 @@ public class AsyncHttp_channels extends AsyncTask<String, String, String> {
 
             }catch(Exception e){
                 Log.d("Exception", e.toString());
+                Toast.makeText(mContext,
+                        "Error retrieving channels...", Toast.LENGTH_SHORT).show();
+
             }
+        }else {
+
+            HashMap<String, String> data = new HashMap<String, String>();
+            data.put("header_token", token);
+            data.put("email", email);
+            AsyncHttp_channels asyncHttp_channels = new AsyncHttp_channels(data, mContext, "Get", mFlag);
+            asyncHttp_channels.execute("http://ipsumapi.herokuapp.com/api/subscriptions/");
+
         }
 
     }
