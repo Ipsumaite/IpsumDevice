@@ -8,11 +8,15 @@
     <color name="fab_color_2">#9c27b0</color>
     <color name="fab_color_2_muted">#a56ab0</color>
     <color name="message_board">#CCFF0000</color>
+    <color name="indigo_limbo">#1A237E</color>
+    <color name="indigo_limbolight">#3F51B5</color>
+    <color name="indigo_bluegrey">#455A64</color>
+    <color name="indigo_greylight">#F5F5F5</color>
 
-    <color name="list_item_title">#fff</color>
-    <color name="list_background">#303030</color>
-    <color name="list_background_pressed">#992416</color>
-    <color name="list_divider">#272727</color>
+    <color name="list_item_title">#626262</color>
+    <color name="list_background">#c5c4c4</color>
+    <color name="list_background_pressed">#3F51B5</color>
+    <color name="list_divider">#c5c4c4</color>
     <color name="counter_text_bg">#626262</color>
     <color name="counter_text_color">#c5c4c4</color>
 </resources>
