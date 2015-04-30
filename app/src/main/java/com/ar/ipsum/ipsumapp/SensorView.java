@@ -317,24 +317,24 @@ public class SensorView implements SensorEventListener{
 		                    	setOrientationQuaternionAndMatrix(quaternionGyroscope);
 		                    }
 		                    else {
-
+                                setOrientationQuaternionAndMatrix(quaternionGyroscope);
 		                    // Directly use Gyro
 		                    //setOrientationQuaternionAndMatrix(quaternionGyroscope);
 		                    // Both are nearly saying the same. Perform normal fusion.
 
 		                    // Interpolate with a fixed weight between the two absolute quaternions obtained from gyro and rotation vector sensors
 		                    // The weight should be quite low, so the rotation vector corrects the gyro only slowly, and the output keeps responsive.
-		                    Quaternion interpolate = new Quaternion();
+		                    /*Quaternion interpolate = new Quaternion();
 		                    quaternionGyroscope.slerp(quaternionRotationVector, interpolate,
-		                            (float) (INDIRECT_INTERPOLATION_WEIGHT * 5));
+		                            (float) (INDIRECT_INTERPOLATION_WEIGHT * gyroscopeRotationVelocity));*/
 
 		                    // Use the interpolated value between gyro and rotationVector
-		                    setOrientationQuaternionAndMatrix(interpolate);
+		                    //setOrientationQuaternionAndMatrix(interpolate);
 		                    // Override current gyroscope-orientation
-		                    quaternionGyroscope.copyVec4(interpolate);
+		                    //quaternionGyroscope.copyVec4(interpolate);
 		                    }
 		                }else if (Math.abs(dotProd) < 0.95) {
-		                    if (gyroscopeRotationVelocity>4){
+		                    if (gyroscopeRotationVelocity>5){
 		                    	setOrientationQuaternionAndMatrix(quaternionGyroscope);
 		                    }
 		                    else {
@@ -347,7 +347,7 @@ public class SensorView implements SensorEventListener{
 		                    // The weight should be quite low, so the rotation vector corrects the gyro only slowly, and the output keeps responsive.
 		                    Quaternion interpolate = new Quaternion();
 		                    quaternionGyroscope.slerp(quaternionRotationVector, interpolate,
-		                            (float) (INDIRECT_INTERPOLATION_WEIGHT * 3));
+		                            (float) (INDIRECT_INTERPOLATION_WEIGHT * gyroscopeRotationVelocity));
 
 		                    // Use the interpolated value between gyro and rotationVector
 		                    setOrientationQuaternionAndMatrix(interpolate);
@@ -357,17 +357,17 @@ public class SensorView implements SensorEventListener{
 
 		                } else {
 		                    // Both are nearly saying the same. Perform normal fusion.
-		                	setOrientationQuaternionAndMatrix(quaternionGyroscope);
+		                	//setOrientationQuaternionAndMatrix(quaternionGyroscope);
 		                    // Interpolate with a fixed weight between the two absolute quaternions obtained from gyro and rotation vector sensors
 		                    // The weight should be quite low, so the rotation vector corrects the gyro only slowly, and the output keeps responsive.
-		                    /*Quaternion interpolate = new Quaternion();
+		                    Quaternion interpolate = new Quaternion();
 		                    quaternionGyroscope.slerp(quaternionRotationVector, interpolate,
 		                            (float) (INDIRECT_INTERPOLATION_WEIGHT * gyroscopeRotationVelocity));
 
 		                    // Use the interpolated value between gyro and rotationVector
 		                    setOrientationQuaternionAndMatrix(interpolate);
 		                    // Override current gyroscope-orientation
-		                    quaternionGyroscope.copyVec4(interpolate);*/
+		                    quaternionGyroscope.copyVec4(interpolate);
 
 		                    // Reset the panic counter because both sensors are saying the same again
 		                    panicCounter = 0;
@@ -382,18 +382,18 @@ public class SensorView implements SensorEventListener{
 		                                "Performing Panic-reset. Resetting orientation to rotation-vector value.");
 
 		                        // Manually set position to whatever rotation vector says.
-		                        //setOrientationQuaternionAndMatrix(quaternionRotationVector);
-			                    Quaternion interpolate = new Quaternion();
+		                        setOrientationQuaternionAndMatrix(quaternionRotationVector);
+			                    /*Quaternion interpolate = new Quaternion();
 			                    quaternionGyroscope.slerp(quaternionRotationVector, interpolate,
 			                            (float) (INDIRECT_INTERPOLATION_WEIGHT * (gyroscopeRotationVelocity+1)));
 
 			                    // Use the interpolated value between gyro and rotationVector
 			                    setOrientationQuaternionAndMatrix(interpolate);
 			                    // Override current gyroscope-orientation
-			                    quaternionGyroscope.copyVec4(interpolate);
+			                    quaternionGyroscope.copyVec4(interpolate);*/
 
 		                        // Override current gyroscope-orientation with corrected value
-		                        //quaternionGyroscope.copyVec4(quaternionRotationVector);
+		                        quaternionGyroscope.copyVec4(quaternionRotationVector);
 
 		                        panicCounter = 0;
 		                    } else {

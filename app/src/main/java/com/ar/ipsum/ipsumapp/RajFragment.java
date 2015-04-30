@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.ImageFormat;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ShapeDrawable;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCaptureSession;
 import android.hardware.camera2.CameraCharacteristics;
@@ -32,6 +34,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -97,6 +101,7 @@ public class RajFragment extends RajawaliFragment implements View.OnTouchListene
     Firebase myFirebaseRef;
 
     List<com.ar.ipsum.ipsumapp.Resources.Message> msgs= new ArrayList<Message>();
+    List<com.ar.ipsum.ipsumapp.Resources.Message> msgs1= new ArrayList<Message>();
 
 
 
@@ -178,6 +183,12 @@ public class RajFragment extends RajawaliFragment implements View.OnTouchListene
 
         Firebase.setAndroidContext(main);
         myFirebaseRef= new Firebase(FIREBASEURL);
+
+        Message msg1= new Message("Test", "Content", "2015-04-30", 38.801146f,-9.178231f, 0, 1, 0);
+        msgs1.add(msg1);
+        Message msg2= new Message("Test1", "Content1", "2015-04-30", 38.798312f, -9.178661f, 0, 1, 0);
+        msgs1.add(msg2);
+
     }
 
     @Override
@@ -212,8 +223,7 @@ public class RajFragment extends RajawaliFragment implements View.OnTouchListene
 
 
 
-
-        RelativeLayout rl = new RelativeLayout(this.getActivity());
+        /*RelativeLayout rl = new RelativeLayout(this.getActivity());
         FloatingActionButton button = new FloatingActionButton(this.getActivity());
         button.setId(R.id.fab_button);
         button.setBackground(getResources().getDrawable(R.drawable.fab_background));
@@ -249,11 +259,11 @@ public class RajFragment extends RajawaliFragment implements View.OnTouchListene
         text.setText("");
         text.setId(R.id.message);
         cardView.addView(text);
-        rl.addView(cardView,params);
+        rl.addView(cardView,params);*/
 
 
 
-        mLayout.addView(rl);
+        //mLayout.addView(rl);
 
 
         return mLayout;
@@ -350,9 +360,29 @@ public class RajFragment extends RajawaliFragment implements View.OnTouchListene
 
             if (event.getAction() == MotionEvent.ACTION_DOWN) {
                 mRenderer.getObjectAt(event.getX(),event.getY());
+                View view =  getActivity().getLayoutInflater().inflate(R.layout.message_layout, null);
+                final PopupWindow popupWindow = new PopupWindow(view,
+                        LinearLayout.LayoutParams.WRAP_CONTENT,
+                        FrameLayout.LayoutParams.WRAP_CONTENT);
+                popupWindow.setOutsideTouchable(true);
+                popupWindow.setBackgroundDrawable(new ShapeDrawable());
+                popupWindow.setTouchInterceptor(new View.OnTouchListener() { // or whatever you want
+                    @Override
+                    public boolean onTouch(View v, MotionEvent event) {
+                        if (event.getAction() == MotionEvent.ACTION_OUTSIDE) // here I want to close the pw when clicking outside it but at all this is just an example of how it works and you can implement the onTouch() or the onKey() you want
+                        {
+                            popupWindow.dismiss();
+                            return true;
+                        }
+                        return false;
+                    }
+
+                });
+                popupWindow.showAtLocation(mLayout, Gravity.CENTER, 0, 0);
+
             }
 
-            return false;
+            return true;
             //return onTouchEvent(event);
 
     }
@@ -377,8 +407,10 @@ public class RajFragment extends RajawaliFragment implements View.OnTouchListene
                         int i = map.size();
                         jObject = new JSONObject(map);
                         if (location != null) {
-                            msgs = completePosition(messageJSONParser.parse(jObject), location);
-                            mRenderer.onMessagesChange(msgs);
+
+                           //msgs = completePosition(messageJSONParser.parse(jObject), location);
+                            msgs1 = completePosition(msgs1, location);
+                            mRenderer.onMessagesChange(msgs1);
                         }
                     }
 

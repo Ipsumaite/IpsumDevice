@@ -1,5 +1,6 @@
 package com.ar.ipsum.ipsumapp;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
@@ -7,6 +8,13 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PorterDuff.Mode;
+import android.os.Handler;
+import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 
 import com.ar.ipsum.ipsumapp.Utils.onMessagesChanged;
 import com.ar.ipsum.ipsumapp.Utils.onOrientationChanged;
@@ -64,6 +72,7 @@ public class Renderer extends RajawaliRenderer implements OnObjectPickedListener
 		setFrameRate(60);
         this.msgs=msgs;
         this.mOrientation= Orientation;
+
 		//ArtutActivity activity = (ArtutActivity) context;
 		//CardView cardView= (CardView) activity.findViewById(R.id.message_board);
 		//TextView textView= (TextView) activity.findViewById(R.id.message);
@@ -98,7 +107,7 @@ public class Renderer extends RajawaliRenderer implements OnObjectPickedListener
 		mPicker.registerObject(obj.get(0));
 		getCurrentCamera().setZ(0.0f);
 		getCurrentCamera().setX(0.0f);
-		getCurrentCamera().setY(0.0f);
+		getCurrentCamera().setY(1.0f);
 
 
 
@@ -145,12 +154,12 @@ public class Renderer extends RajawaliRenderer implements OnObjectPickedListener
 			int n=i;
 			com.ar.ipsum.ipsumapp.Resources.Message msg= mMessages.get(i);
 			
-			float bear_x=msg.getDist()/10*(float) (Math.sin(Math.toRadians(msg.getBearing())));
-			float bear_z=msg.getDist()/10*(float) (-1*Math.cos(Math.toRadians(msg.getBearing())));
-			float bear_y=msg.getAlt()/10;
+			float bear_x=msg.getDist()/5*(float) (Math.sin(Math.toRadians(msg.getBearing())));
+			float bear_z=msg.getDist()/5*(float) (-1*Math.cos(Math.toRadians(msg.getBearing())));
+			float bear_y=msg.getDist()*0.02f;
 
 
-			obj.get(i).setPosition(bear_x, 0, bear_z);
+			obj.get(i).setPosition(bear_x, bear_y, bear_z);
 			obj.get(i).setRotY(obj.get(i).getRotY() + 1);
 			
 			//obj_text.get(i).setPosition(bear_x, 1.5, bear_z);
@@ -162,7 +171,7 @@ public class Renderer extends RajawaliRenderer implements OnObjectPickedListener
         float z= -1*(float)Math.cos(mOrientation[0]);
         float y= -1*(float)Math.sin(mOrientation[1]);
         
-		getCurrentCamera().setLookAt(x, y, z);
+		getCurrentCamera().setLookAt(x, 1+y, z);
 		/*if (messages.size()>0){
 			obj_msg.get(0).setPosition(x, y-2, z/Math.abs(z));
 		}*/
@@ -266,18 +275,11 @@ public class Renderer extends RajawaliRenderer implements OnObjectPickedListener
 	public void onObjectPicked(Object3D object) {
 		// TODO Auto-generated method stub
 		//object.setZ(object.getZ() == 0 ? -2 : 0);
-		for (int i=0;i<obj_msg.size();i++){
-			if(object.equals(obj_msg.get(i))){
-				
+		for (int i=0;i<obj.size();i++){
+			if(object.equals(obj.get(i))){
+
+				Log.d("Message",msgs.get(i).getContent());
 			}
-		}
-		
-		
-		if (obj_msg.get(0).getZ()==object.getZ()){
-			obj_msg.get(0).setX(object.getX()+2);
-			obj_msg.get(0).setY(object.getY()-1);
-			obj_msg.get(0).setZ(object.getZ());
-			//
 		}
 		
 		
@@ -303,4 +305,6 @@ public class Renderer extends RajawaliRenderer implements OnObjectPickedListener
         }
 
     }
+
+
 }

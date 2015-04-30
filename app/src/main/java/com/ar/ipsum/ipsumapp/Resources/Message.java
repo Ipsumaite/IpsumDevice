@@ -68,6 +68,14 @@ public class Message {
         return this.bearing;
     }
 
+    public String getContent(){
+        return this.content;
+    }
+
+    public String getChannel(){
+        return this.channel;
+    }
+
     public void setDist(float dist){
        this.dist=dist;
     }

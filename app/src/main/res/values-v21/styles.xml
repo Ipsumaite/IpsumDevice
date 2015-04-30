@@ -9,6 +9,6 @@
         <!--   theme UI controls like checkboxes and text fields -->
         <item name="android:colorAccent">@color/indigo_bluegrey</item>
 
-        <item name="android:textColorPrimary">@color/indigo_bluegrey</item>
+        <item name="android:textColorPrimary">@color/counter_text_color</item>
     </style>
 </resources>
