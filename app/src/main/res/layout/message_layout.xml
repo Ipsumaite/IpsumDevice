@@ -6,40 +6,27 @@
     android:layout_margin="1dp"
     android:orientation="vertical"
     android:padding="10dp"
-    android:background="@color/indigo_bluegrey">
+    android:background="@color/indigo_greylight">
 
     <TextView
-        android:id="@+id/text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Large Text"
+        android:id="@+id/msg_channel"
+        android:layout_gravity="top|left"
+        android:textColor="@color/indigo_bluegrey" />
+
+    <TextView
+        android:id="@+id/msg_body"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="bottom|right"
         android:padding="5dp"
         android:text="PopupWindow Example"
-        android:textColor="#000000"
+        android:textColor="@color/indigo_bluegrey"
         android:textSize="17sp"
-        android:textStyle="italic" />
+        android:textStyle="italic"
+        android:layout_gravity="bottom|right" />
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical">
-
-        <Button
-            android:id="@+id/btn_dismiss"
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Dismiss"
-            android:visibility="gone" />
-
-        <TextView
-            android:id="@+id/lbl_dismiss"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="Touch outside of this box to dismiss"
-            android:textColor="#ffffff"
-            android:textStyle="bold" />
-
-    </FrameLayout>
 </LinearLayout>

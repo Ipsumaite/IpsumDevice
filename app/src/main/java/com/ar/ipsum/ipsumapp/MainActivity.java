@@ -25,12 +25,14 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.ar.ipsum.ipsumapp.Resources.Channel;
+import com.ar.ipsum.ipsumapp.Resources.*;
+import com.ar.ipsum.ipsumapp.Resources.Message;
 import com.ar.ipsum.ipsumapp.Utils.AsyncHttpGet_credentials;
 import com.ar.ipsum.ipsumapp.Utils.AsyncHttpPost;
 import com.ar.ipsum.ipsumapp.Utils.AsyncHttpPost_presence;
 import com.ar.ipsum.ipsumapp.Utils.onChannelsChanged;
 import com.ar.ipsum.ipsumapp.Utils.onGPSChanged;
+import com.ar.ipsum.ipsumapp.Utils.onObjectSelected;
 import com.ar.ipsum.ipsumapp.Utils.onOrientationChanged;
 import com.ar.ipsum.ipsumapp.view.NavDrawerItem;
 import com.ar.ipsum.ipsumapp.view.NavDrawerListAdapter;
@@ -51,7 +53,7 @@ import java.util.Date;
 import java.util.HashMap;
 
 
-public class MainActivity extends Activity implements onChannelsChanged, onOrientationChanged,LocationListener,
+public class MainActivity extends Activity implements onChannelsChanged, onOrientationChanged,LocationListener, onObjectSelected,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
     private DrawerLayout mDrawerLayout;
@@ -324,7 +326,21 @@ public class MainActivity extends Activity implements onChannelsChanged, onOrien
     @Override
     public void onOrientaionChange(float[] orientation) {
         this.Orientation= orientation;
-        raj.onOrientaionChange(orientation);
+
+        try {
+            raj.onOrientaionChange(orientation);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onObjectSelect(Message msg) {
+        try {
+            raj.onObjectSelect(msg);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**

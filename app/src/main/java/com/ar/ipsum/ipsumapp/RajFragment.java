@@ -42,6 +42,7 @@ import android.widget.TextView;
 import com.ar.ipsum.ipsumapp.Resources.Message;
 import com.ar.ipsum.ipsumapp.Utils.MessageJSONParser;
 import com.ar.ipsum.ipsumapp.Utils.onGPSChanged;
+import com.ar.ipsum.ipsumapp.Utils.onObjectSelected;
 import com.ar.ipsum.ipsumapp.Utils.onOrientationChanged;
 import com.ar.ipsum.ipsumapp.view.FloatingActionButton;
 import com.firebase.client.DataSnapshot;
@@ -72,7 +73,8 @@ import rajawali.RajawaliFragment;
  */
 
 
-public class RajFragment extends RajawaliFragment implements View.OnTouchListener, SharedPreferences.OnSharedPreferenceChangeListener, onOrientationChanged, onGPSChanged {
+public class RajFragment extends RajawaliFragment implements View.OnTouchListener, SharedPreferences.OnSharedPreferenceChangeListener,
+        onOrientationChanged, onGPSChanged, onObjectSelected {
 
 
     /** Output files will be saved as /sdcard/Pictures/cameratoo*.jpg */
@@ -102,6 +104,8 @@ public class RajFragment extends RajawaliFragment implements View.OnTouchListene
 
     List<com.ar.ipsum.ipsumapp.Resources.Message> msgs= new ArrayList<Message>();
     List<com.ar.ipsum.ipsumapp.Resources.Message> msgs1= new ArrayList<Message>();
+
+    Message msg_selected= new Message();
 
 
 
@@ -174,7 +178,7 @@ public class RajFragment extends RajawaliFragment implements View.OnTouchListene
         MainActivity main = (MainActivity) getActivity();
         sense = main.sense;
 
-        mRenderer = new Renderer(this.getActivity(), sense, msgs, Orientation);
+        mRenderer = new Renderer(this.getActivity(), msgs, Orientation);
         mRenderer.setSurfaceView(mSurfaceView);
 
         super.setRenderer(mRenderer);
@@ -360,25 +364,6 @@ public class RajFragment extends RajawaliFragment implements View.OnTouchListene
 
             if (event.getAction() == MotionEvent.ACTION_DOWN) {
                 mRenderer.getObjectAt(event.getX(),event.getY());
-                View view =  getActivity().getLayoutInflater().inflate(R.layout.message_layout, null);
-                final PopupWindow popupWindow = new PopupWindow(view,
-                        LinearLayout.LayoutParams.WRAP_CONTENT,
-                        FrameLayout.LayoutParams.WRAP_CONTENT);
-                popupWindow.setOutsideTouchable(true);
-                popupWindow.setBackgroundDrawable(new ShapeDrawable());
-                popupWindow.setTouchInterceptor(new View.OnTouchListener() { // or whatever you want
-                    @Override
-                    public boolean onTouch(View v, MotionEvent event) {
-                        if (event.getAction() == MotionEvent.ACTION_OUTSIDE) // here I want to close the pw when clicking outside it but at all this is just an example of how it works and you can implement the onTouch() or the onKey() you want
-                        {
-                            popupWindow.dismiss();
-                            return true;
-                        }
-                        return false;
-                    }
-
-                });
-                popupWindow.showAtLocation(mLayout, Gravity.CENTER, 0, 0);
 
             }
 
@@ -439,6 +424,42 @@ public class RajFragment extends RajawaliFragment implements View.OnTouchListene
     @Override
     public void onGPSChange(Location location) {
         this.location= location;
+    }
+
+    @Override
+    public void onObjectSelect(Message msg) {
+        msg_selected=msg;
+        getActivity().runOnUiThread(new Runnable() {
+            public void run() {
+                final PopupWindow pw;
+                View layout = getActivity().getLayoutInflater().inflate(R.layout.message_layout, null);
+                TextView channel= (TextView) layout.findViewById(R.id.msg_channel);
+                TextView msg_boddy= (TextView) layout.findViewById(R.id.msg_body);
+                channel.setText(msg_selected.getChannel());
+                msg_boddy.setText(msg_selected.getContent());
+                pw = new PopupWindow(layout, LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, true);
+
+                pw.setOutsideTouchable(true);
+                pw.setBackgroundDrawable(new ShapeDrawable());
+                pw.setTouchInterceptor(new View.OnTouchListener() { // or whatever you want
+                    @Override
+                    public boolean onTouch(View v, MotionEvent event)
+                    {
+                        if(event.getAction() == MotionEvent.ACTION_OUTSIDE) // here I want to close the pw when clicking outside it but at all this is just an example of how it works and you can implement the onTouch() or the onKey() you want
+                        {
+                            pw.dismiss();
+                            msg_selected=new Message();
+                            return true;
+                        }
+                        return false;
+                    }
+
+                });
+                pw.showAtLocation(mLayout, Gravity.LEFT|Gravity.BOTTOM, 0, 0);
+            }
+        });
+
+
     }
 
 
@@ -698,4 +719,5 @@ public class RajFragment extends RajawaliFragment implements View.OnTouchListene
 
         return results;
     }
+
 }

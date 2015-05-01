@@ -17,6 +17,7 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 
 import com.ar.ipsum.ipsumapp.Utils.onMessagesChanged;
+import com.ar.ipsum.ipsumapp.Utils.onObjectSelected;
 import com.ar.ipsum.ipsumapp.Utils.onOrientationChanged;
 import com.ar.ipsum.ipsumapp.representation.Quaternion;
 
@@ -60,15 +61,16 @@ public class Renderer extends RajawaliRenderer implements OnObjectPickedListener
 	private int mFrameCount;
 	private boolean mShouldUpdateTexture;
     List<com.ar.ipsum.ipsumapp.Resources.Message> msgs= new ArrayList<com.ar.ipsum.ipsumapp.Resources.Message>();
+    onObjectSelected mCallbackMsg;
 	//Sphere timeSphere;
 	//Sphere parentSphere;
 
 
 
-	public Renderer(Context context, SensorView sense, List<com.ar.ipsum.ipsumapp.Resources.Message> msgs, float[] Orientation) {
+	public Renderer(Context context, List<com.ar.ipsum.ipsumapp.Resources.Message> msgs, float[] Orientation) {
 		super(context);
 		this.context =context;
-		this.sensor= sense;
+		//this.sensor= sense;
 		setFrameRate(60);
         this.msgs=msgs;
         this.mOrientation= Orientation;
@@ -79,6 +81,15 @@ public class Renderer extends RajawaliRenderer implements OnObjectPickedListener
 		//textView.setText("mensagem");
 
 		// TODO Auto-generated constructor stub
+
+        Activity activity = (Activity) context;
+
+        try {
+            mCallbackMsg = (onObjectSelected) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString()
+                    + " must implement OnHeadlineSelectedListener");
+        }
 	}
 
 	protected void initScene() {
@@ -143,8 +154,8 @@ public class Renderer extends RajawaliRenderer implements OnObjectPickedListener
 
         List<com.ar.ipsum.ipsumapp.Resources.Message> mMessages=msgs;
 		super.onDrawFrame(glUnused);
-		mOrientation=sensor.getRotationMatrix();
-		mQuat=sensor.getQuaternion();
+		//mOrientation=sensor.getRotationMatrix();
+		//mQuat=sensor.getQuaternion();
 
 		if (obj.size()<mMessages.size()){
 			iniciar(mMessages.size()-obj.size());
@@ -277,8 +288,8 @@ public class Renderer extends RajawaliRenderer implements OnObjectPickedListener
 		//object.setZ(object.getZ() == 0 ? -2 : 0);
 		for (int i=0;i<obj.size();i++){
 			if(object.equals(obj.get(i))){
-
 				Log.d("Message",msgs.get(i).getContent());
+                mCallbackMsg.onObjectSelect(msgs.get(i));
 			}
 		}
 		
