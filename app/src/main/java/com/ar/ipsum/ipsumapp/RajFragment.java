@@ -166,6 +166,7 @@ public class RajFragment extends RajawaliFragment implements View.OnTouchListene
         View layout = getActivity().getLayoutInflater().inflate(R.layout.surface, null);
         mSurfaceView1 = (SurfaceView) layout.findViewById(R.id.mainSurfaceView);
         mSurfaceView1.getHolder().addCallback(mSurfaceHolderCallback);
+
         //setContentView(mSurfaceView1);
 
 
@@ -192,7 +193,10 @@ public class RajFragment extends RajawaliFragment implements View.OnTouchListene
         msgs1.add(msg1);
         Message msg2= new Message("Test1", "Content1", "2015-04-30", 38.798312f, -9.178661f, 0, 1, 0);
         msgs1.add(msg2);
-
+        Message msg3= new Message("Test", "Content", "2015-04-30", 38.763595f, -9.242668f, 0, 1, 0);
+        msgs1.add(msg3);
+        Message msg4= new Message("Test1", "Content1", "2015-04-30", 38.762064f, -9.242701f, 0, 1, 0);
+        msgs1.add(msg4);
     }
 
     @Override

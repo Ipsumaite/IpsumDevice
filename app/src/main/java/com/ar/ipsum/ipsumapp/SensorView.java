@@ -217,8 +217,8 @@ public class SensorView implements SensorEventListener{
 	    Sensor gyroSensor = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
 	    Sensor rotSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR);
 
-	    isGyroAvailable = sensorManager.registerListener(this, gyroSensor, SensorManager.SENSOR_DELAY_NORMAL);
-	    isGyroAvailable = sensorManager.registerListener(this, rotSensor, SensorManager.SENSOR_DELAY_NORMAL);
+	    isGyroAvailable = sensorManager.registerListener(this, gyroSensor, SensorManager.SENSOR_DELAY_FASTEST);
+	    isGyroAvailable = sensorManager.registerListener(this, rotSensor, SensorManager.SENSOR_DELAY_FASTEST);
 
         fuseTimer.scheduleAtFixedRate(new calculateFusedOrientationTask(),
                 1000, TIME_CONSTANT);
@@ -313,28 +313,11 @@ public class SensorView implements SensorEventListener{
 		                    if (Math.abs(dotProd) < OUTLIER_PANIC_THRESHOLD) {
 		                        panicCounter++;
 		                    }
-		                    if (gyroscopeRotationVelocity>3){
-		                    	setOrientationQuaternionAndMatrix(quaternionGyroscope);
-		                    }
-		                    else {
-                                setOrientationQuaternionAndMatrix(quaternionGyroscope);
-		                    // Directly use Gyro
-		                    //setOrientationQuaternionAndMatrix(quaternionGyroscope);
-		                    // Both are nearly saying the same. Perform normal fusion.
 
-		                    // Interpolate with a fixed weight between the two absolute quaternions obtained from gyro and rotation vector sensors
-		                    // The weight should be quite low, so the rotation vector corrects the gyro only slowly, and the output keeps responsive.
-		                    /*Quaternion interpolate = new Quaternion();
-		                    quaternionGyroscope.slerp(quaternionRotationVector, interpolate,
-		                            (float) (INDIRECT_INTERPOLATION_WEIGHT * gyroscopeRotationVelocity));*/
+                            setOrientationQuaternionAndMatrix(quaternionGyroscope);
 
-		                    // Use the interpolated value between gyro and rotationVector
-		                    //setOrientationQuaternionAndMatrix(interpolate);
-		                    // Override current gyroscope-orientation
-		                    //quaternionGyroscope.copyVec4(interpolate);
-		                    }
 		                }else if (Math.abs(dotProd) < 0.95) {
-		                    if (gyroscopeRotationVelocity>5){
+		                    if (gyroscopeRotationVelocity>3){
 		                    	setOrientationQuaternionAndMatrix(quaternionGyroscope);
 		                    }
 		                    else {
