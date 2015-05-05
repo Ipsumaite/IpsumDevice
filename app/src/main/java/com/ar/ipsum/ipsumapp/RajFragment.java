@@ -1,11 +1,8 @@
 package com.ar.ipsum.ipsumapp;
 
-import android.animation.AnimatorInflater;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.graphics.ImageFormat;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCaptureSession;
@@ -21,7 +18,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
-import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.util.Size;
 import android.view.Gravity;
@@ -33,7 +29,6 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
@@ -44,7 +39,6 @@ import com.ar.ipsum.ipsumapp.Utils.MessageJSONParser;
 import com.ar.ipsum.ipsumapp.Utils.onGPSChanged;
 import com.ar.ipsum.ipsumapp.Utils.onObjectSelected;
 import com.ar.ipsum.ipsumapp.Utils.onOrientationChanged;
-import com.ar.ipsum.ipsumapp.view.FloatingActionButton;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
@@ -197,6 +191,8 @@ public class RajFragment extends RajawaliFragment implements View.OnTouchListene
         msgs1.add(msg3);
         Message msg4= new Message("Test1", "Content1", "2015-04-30", 38.762064f, -9.242701f, 0, 1, 0);
         msgs1.add(msg4);
+        Message msg5= new Message("Test1", "Content1", "2015-04-30", 38.729872f, -9.146630f, 0, 1, 0);
+        msgs1.add(msg5);
     }
 
     @Override
@@ -281,8 +277,10 @@ public class RajFragment extends RajawaliFragment implements View.OnTouchListene
     public void onDestroyView() {
         super.onDestroyView();
 
-        if (mLayout != null)
+        if (mLayout != null) {
             mLayout.removeView(mSurfaceView);
+            mLayout.removeView(mSurfaceView1);
+        }
     }
 
     @Override
@@ -318,6 +316,40 @@ public class RajFragment extends RajawaliFragment implements View.OnTouchListene
         mSurfaceView1.getHolder().addCallback(mSurfaceHolderCallback);
         //setContentView(mSurfaceView1);
         mLayout.addView(mSurfaceView1);*/
+        id= prefs.getString("idfirebaseKey","");
+        if (!id.equals("")){
+            myFirebaseRef.child("streams/"+id).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot snapshot) {
+                    //System.out.println(snapshot.getValue());  //prints "Do you have data? You'll love Firebase."
+                    JSONObject jObject;
+                    JSONArray jArray;
+                    com.ar.ipsum.ipsumapp.Resources.Message message= new com.ar.ipsum.ipsumapp.Resources.Message();
+                    MessageJSONParser messageJSONParser= new MessageJSONParser();
+
+                    Map<String, Object> map= new HashMap<String, Object>();
+                    map = (Map<String, Object>) snapshot.getValue();
+                    if(map!=null) {
+                        int i = map.size();
+                        jObject = new JSONObject(map);
+                        if (location != null) {
+
+                            //msgs = completePosition(messageJSONParser.parse(jObject), location);
+                            msgs1 = completePosition(msgs1, location);
+                            mRenderer.onMessagesChange(msgs1);
+                        }
+                    }
+
+
+
+                }
+                @Override public void onCancelled(FirebaseError error) { }
+
+
+            });
+        }
+
+
     }
 
     @Override
