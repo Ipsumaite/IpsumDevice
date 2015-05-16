@@ -124,9 +124,9 @@ public class AsyncHttpPost  extends AsyncTask<String, String, String> {
 
                     SharedPreferences.Editor editor = sharedpreferences.edit();
                     editor.putString(tokenKey,mToken);
-                    editor.putString(state,mStatus);
+                    editor.putString(state, mStatus);
                     editor.commit();
-
+                    ((MainActivity)mContext).updateMenu(user1);
                     Toast.makeText(mContext,
                             user1 + " is logged in!", Toast.LENGTH_SHORT).show();
 

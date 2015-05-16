@@ -106,6 +106,7 @@ public class MainActivity extends Activity implements onChannelsChanged, onOrien
     private ArrayList<Channel> channels= new ArrayList<Channel>();
     private float[] Orientation= new float[3];
     private FusedLocationProviderApi fusedLocationProviderApi;
+    private Menu menu;
     Location mCurrentLocation;
     String mLastUpdateTime;
 
@@ -359,6 +360,7 @@ public class MainActivity extends Activity implements onChannelsChanged, onOrien
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
+        this.menu=menu;
         return true;
     }
 
@@ -483,9 +485,9 @@ public class MainActivity extends Activity implements onChannelsChanged, onOrien
         String pass1=sharedpreferences.getString(pass,"");
         String token1= sharedpreferences.getString(tokenKey,"");
         SharedPreferences.Editor editor1 = sharedpreferences.edit();
-        editor1.putString(state,"");
-        editor1.putString(id,"");
-        editor1.putString("Channels","");
+        editor1.putString(state, "");
+        editor1.putString(id, "");
+        editor1.putString("Channels", "");
         editor1.commit();
         if(!isDataValid(user1, pass1)) {
             Toast.makeText(getBaseContext(),
@@ -555,6 +557,11 @@ public class MainActivity extends Activity implements onChannelsChanged, onOrien
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
     }
 
+
+    public void updateMenu(String name){
+        MenuItem item= menu.findItem(R.id.login_req);
+        item.setTitle(name);
+    }
 
 
 
