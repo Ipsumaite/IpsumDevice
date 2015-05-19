@@ -193,6 +193,13 @@ public class RajFragment extends RajawaliFragment implements View.OnTouchListene
         msgs1.add(msg4);
         Message msg5= new Message("Test1", "Content1", "2015-04-30", 38.729872f, -9.146630f, 0, 1, 0);
         msgs1.add(msg5);
+        Message msg6= new Message("Test", "Content", "2015-04-30", 51.612139f, -1.228584f, 0, 1, 0);
+        msgs1.add(msg6);
+        Message msg7= new Message("Test1", "Content1", "2015-04-30", 51.610606f, -1.229903f, 0, 1, 0);
+        msgs1.add(msg7);
+        Message msg8= new Message("Test2", "Content1", "2015-04-30", 51.611706f, -1.227275f, 0, 1, 0);
+        msgs1.add(msg8);
+
     }
 
     @Override
