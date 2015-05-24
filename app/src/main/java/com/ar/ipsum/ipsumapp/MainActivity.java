@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
+import android.hardware.Camera;
 import android.hardware.SensorManager;
 import android.hardware.camera2.CameraManager;
 import android.location.Location;
@@ -51,6 +52,11 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+
+import android.hardware.Camera;
+import android.hardware.SensorManager;
+import android.hardware.Camera.CameraInfo;
+import android.hardware.Camera.Size;
 
 
 public class MainActivity extends Activity implements onChannelsChanged, onOrientationChanged,LocationListener, onObjectSelected,
@@ -110,6 +116,8 @@ public class MainActivity extends Activity implements onChannelsChanged, onOrien
     Location mCurrentLocation;
     String mLastUpdateTime;
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -128,6 +136,8 @@ public class MainActivity extends Activity implements onChannelsChanged, onOrien
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         sensors = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+
 
 
         login();
@@ -372,7 +382,8 @@ public class MainActivity extends Activity implements onChannelsChanged, onOrien
         }
         // Handle action bar actions click
         switch (item.getItemId()) {
-            case R.id.action_settings:
+            case R.id.login_req:
+                login();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -386,7 +397,7 @@ public class MainActivity extends Activity implements onChannelsChanged, onOrien
     public boolean onPrepareOptionsMenu(Menu menu) {
         // if nav drawer is opened, hide the action items
         boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
-        menu.findItem(R.id.action_settings).setVisible(!drawerOpen);
+        //menu.findItem(R.id.action_settings).setVisible(!drawerOpen);
         return super.onPrepareOptionsMenu(menu);
     }
 
@@ -561,6 +572,19 @@ public class MainActivity extends Activity implements onChannelsChanged, onOrien
     public void updateMenu(String name){
         MenuItem item= menu.findItem(R.id.login_req);
         item.setTitle(name);
+    }
+
+    public static Camera getCameraInstance(){
+        Camera c = null;
+
+        try {
+            c = Camera.open();// attempt to get a Camera instance
+        }
+        catch (Exception e){
+            // Camera is not available (in use or does not exist)
+            e.printStackTrace();
+        }
+        return c; // returns null if camera is unavailable
     }
 
 

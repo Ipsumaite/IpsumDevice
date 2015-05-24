@@ -10,10 +10,12 @@
         android:id="@+id/body"
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
         android:elegantTextHeight="false"
         android:nestedScrollingEnabled="true"
         android:singleLine="false"
         android:layout_toStartOf="@+id/button"
+        android:layout_toLeftOf="@id/button"
         android:inputType="textShortMessage" />
 
     <Spinner
@@ -22,17 +24,23 @@
         android:id="@+id/spinner_channel"
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
         android:layout_toStartOf="@+id/map"
-        android:layout_alignParentEnd="true" />
+        android:layout_toLeftOf="@id/map"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"/>
 
     <com.google.android.gms.maps.MapView
         android:id="@+id/map"
         android:layout_width="100dp"
         android:layout_height="200dp"
         android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
         android:layout_toEndOf="@+id/body"
+        android:layout_toRightOf="@id/body"
         android:layout_below="@+id/spinner_channel"
         android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
         android:layout_above="@+id/body" />
 
     <Button
@@ -42,5 +50,6 @@
         android:text="New Button"
         android:id="@+id/button"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"/>
 </RelativeLayout>

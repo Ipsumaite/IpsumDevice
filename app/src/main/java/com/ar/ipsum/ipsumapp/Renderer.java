@@ -178,9 +178,14 @@ public class Renderer extends RajawaliRenderer implements OnObjectPickedListener
 			
 		}
 		
-        float x= (float)Math.sin(mOrientation[0]);
+        /*float x= (float)Math.sin(mOrientation[0]);
         float z= -1*(float)Math.cos(mOrientation[0]);
-        float y= -1*(float)Math.sin(mOrientation[1]);
+        float y= -1*(float)Math.sin(mOrientation[1]);*/
+
+
+		float x= (float)Math.sin(0.3236751);
+		float z= -1*(float)Math.cos(0.3236751);
+		float y= -1*(float)Math.sin(-0.14019051);
         
 		getCurrentCamera().setLookAt(x, 1+y, z);
 		/*if (messages.size()>0){
