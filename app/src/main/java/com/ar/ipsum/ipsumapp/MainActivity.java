@@ -178,7 +178,7 @@ public class MainActivity extends Activity implements onChannelsChanged, onOrien
         // Pages
         navDrawerItems.add(new NavDrawerItem(navMenuTitles[4], navMenuIcons.getResourceId(4, -1)));
         // What's hot, We  will add a counter here
-        navDrawerItems.add(new NavDrawerItem(navMenuTitles[5], navMenuIcons.getResourceId(5, -1), true, "50+"));
+        //navDrawerItems.add(new NavDrawerItem(navMenuTitles[5], navMenuIcons.getResourceId(5, -1), true, "50+"));
 
 
         // Recycle the typed array
@@ -361,6 +361,13 @@ public class MainActivity extends Activity implements onChannelsChanged, onOrien
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
         this.menu=menu;
+        sharedpreferences=getSharedPreferences(MyPREFERENCES,
+                Context.MODE_PRIVATE);
+        String status=sharedpreferences.getString("state","");
+        if (status.equals("Authenticated") || status.equals("Registered")){
+            String user=sharedpreferences.getString(name,"User Not Logged In");
+            updateMenu(user);
+        }
         return true;
     }
 
@@ -374,6 +381,9 @@ public class MainActivity extends Activity implements onChannelsChanged, onOrien
         switch (item.getItemId()) {
             case R.id.action_settings:
                 return true;
+            case R.id.login_req:
+                login();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -386,7 +396,7 @@ public class MainActivity extends Activity implements onChannelsChanged, onOrien
     public boolean onPrepareOptionsMenu(Menu menu) {
         // if nav drawer is opened, hide the action items
         boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
-        menu.findItem(R.id.action_settings).setVisible(!drawerOpen);
+        //menu.findItem(R.id.action_settings).setVisible(!drawerOpen);
         return super.onPrepareOptionsMenu(menu);
     }
 
@@ -421,13 +431,13 @@ public class MainActivity extends Activity implements onChannelsChanged, onOrien
             case 3:
                 fragment = new LoginFragment();
                 break;
-            case 4:
+            /*case 4:
                 fragment = new MessageFragment();
                 msg= (MessageFragment) fragment;
                 args.putDouble(lat, latitude);
                 args.putDouble(lng, longitude);
                 msg.setArguments(args);
-                break;
+                break;*/
 
              /*case 5:
                 fragment = new WhatsHotFragment();
