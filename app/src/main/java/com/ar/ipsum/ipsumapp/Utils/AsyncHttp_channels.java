@@ -6,7 +6,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.ar.ipsum.ipsumapp.Resources.Channel;
+import com.ar.ipsum.ipsumapp.Resources.MyChannel;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -35,6 +35,7 @@ public class AsyncHttp_channels extends AsyncTask<String, String, String> {
     private int mFlag;
     private String token="";
     private String email="";
+    private String request="";
     public static final String tokenKey = "tokenKey";
     public static final String state = "state";
     public static final String name = "nameKey";
@@ -47,6 +48,7 @@ public class AsyncHttp_channels extends AsyncTask<String, String, String> {
         channelsChanged= (onChannelsChanged) mContext;
         mMethod= method;
         mFlag= flag;
+
 
     }
 
@@ -86,6 +88,7 @@ public class AsyncHttp_channels extends AsyncTask<String, String, String> {
             }
 
             if (mMethod.contains("Get")){
+                request=params[0];
                 HttpGet httpGet = new HttpGet(params[0]+email);
                 HttpClient httpclient = new DefaultHttpClient();
                 httpGet.setHeader("Authorization", "Bearer "+token);
@@ -132,6 +135,7 @@ public class AsyncHttp_channels extends AsyncTask<String, String, String> {
 
     protected void onPostExecute(String result) {
         ChannelJSONParser channelJSONParser= new ChannelJSONParser();
+        MyChannelJSONParser mychannelJSONParser= new MyChannelJSONParser();
 
         JSONObject jObject;
         SharedPreferences sharedpreferences;
@@ -141,10 +145,20 @@ public class AsyncHttp_channels extends AsyncTask<String, String, String> {
 
                 //jObject = new JSONObject(jsonData[0]);
                 jObject = new JSONObject(result);
-                List<Channel> channels= new ArrayList<Channel>();
-                /** Getting the parsed data as a List construct */
-                channels= channelJSONParser.parse(jObject);
-                channelsChanged.onChannelChange((ArrayList<Channel>) channels);
+                if (request.contains("subscriptions")){
+                    //List<Channel> channels= new ArrayList<Channel>();
+                    /** Getting the parsed data as a List construct */
+                    //channels= channelJSONParser.parse(jObject);
+                    //channelsChanged.onChannelChange((ArrayList<Channel>) channels);
+                    channelsChanged.onChannelChange(jObject, "subscriptions");
+                }else if (request.contains("mychannels")){
+                    List<MyChannel> mychannels= new ArrayList<MyChannel>();
+                    /** Getting the parsed data as a List construct */
+                    ;
+                    channelsChanged.onChannelChange(jObject, "mychannels");
+                    //channelsChanged.onChannelChange((ArrayList<MyChannel>) channels);
+                }
+
 
             }catch(Exception e){
                 Log.d("Exception", e.toString());

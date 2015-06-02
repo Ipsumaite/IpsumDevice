@@ -43,8 +43,8 @@ public class PublishFragment extends Fragment {
 
     private double latitude= 0.0;
     private double longitude= 0.0;
-    private ArrayList<Channel> channels;
-    private Channel channel;
+    private ArrayList<Channel> mychannels;
+    private Channel  mychannel;
 
     Spinner spinner_channel;
 
@@ -101,16 +101,16 @@ public class PublishFragment extends Fragment {
         sharedpreferences=getActivity().getSharedPreferences(MyPREFERENCES,
                 Context.MODE_PRIVATE);
         Gson gson = new Gson();
-        String json = sharedpreferences.getString("Channels","");
+        String json = sharedpreferences.getString("MyChannels","");
         Type type = new TypeToken<ArrayList<Channel>>(){}.getType();
-        this.channels= gson.fromJson(json, type);
-        if (this.channels==null){
-            this.channels= new ArrayList<Channel>();
+        this.mychannels= gson.fromJson(json, type);
+        if (this.mychannels==null){
+            this.mychannels= new ArrayList<Channel>();
         }
-        if (channels.size()>0){
-            channel_items = new String[channels.size()];
-            for (int i=0; i< channels.size(); i++){
-                channel_items[i]=channels.get(i).getName();
+        if (mychannels.size()>0){
+            channel_items = new String[mychannels.size()];
+            for (int i=0; i< mychannels.size(); i++){
+                channel_items[i]=mychannels.get(i).getName();
             }
         }else{
             channel_items = new String[1];
@@ -217,8 +217,8 @@ public class PublishFragment extends Fragment {
     }
 
     public void onChannelChange(ArrayList<Channel> channels) {
-        this.channels.clear();
-        this.channels.addAll(channels);
+        this.mychannels.clear();
+        this.mychannels.addAll(channels);
         channel_items = new String[channels.size()];
         for (int i=0; i< channels.size(); i++){
             channel_items[i]=channels.get(i).getName();

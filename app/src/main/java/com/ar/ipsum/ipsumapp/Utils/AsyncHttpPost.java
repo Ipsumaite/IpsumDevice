@@ -121,6 +121,8 @@ public class AsyncHttpPost  extends AsyncTask<String, String, String> {
                     int mFlag= 0;
                     AsyncHttp_channels asyncHttp_channels = new AsyncHttp_channels(data, mContext, mMethod, mFlag);
                     asyncHttp_channels.execute("http://ipsumapi.herokuapp.com/api/subscriptions/");
+                    AsyncHttp_channels asyncHttp_channels1 = new AsyncHttp_channels(data, mContext, mMethod, mFlag);
+                    asyncHttp_channels1.execute("http://ipsumapi.herokuapp.com/api/mychannels/");
 
                     SharedPreferences.Editor editor = sharedpreferences.edit();
                     editor.putString(tokenKey,mToken);

@@ -30,6 +30,8 @@ import com.ar.ipsum.ipsumapp.Resources.Message;
 import com.ar.ipsum.ipsumapp.Utils.AsyncHttpGet_credentials;
 import com.ar.ipsum.ipsumapp.Utils.AsyncHttpPost;
 import com.ar.ipsum.ipsumapp.Utils.AsyncHttpPost_presence;
+import com.ar.ipsum.ipsumapp.Utils.ChannelJSONParser;
+import com.ar.ipsum.ipsumapp.Utils.MyChannelJSONParser;
 import com.ar.ipsum.ipsumapp.Utils.onChannelsChanged;
 import com.ar.ipsum.ipsumapp.Utils.onGPSChanged;
 import com.ar.ipsum.ipsumapp.Utils.onObjectSelected;
@@ -46,6 +48,8 @@ import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.gson.Gson;
+
+import org.json.JSONObject;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -104,6 +108,7 @@ public class MainActivity extends Activity implements onChannelsChanged, onOrien
     onGPSChanged mCallback;
     onOrientationChanged mCallback1;
     private ArrayList<Channel> channels= new ArrayList<Channel>();
+    private ArrayList<MyChannel> mychannels= new ArrayList<MyChannel>();
     private float[] Orientation= new float[3];
     private FusedLocationProviderApi fusedLocationProviderApi;
     private Menu menu;
@@ -303,14 +308,23 @@ public class MainActivity extends Activity implements onChannelsChanged, onOrien
 
 
     @Override
-    public void onChannelChange(ArrayList<Channel> channels) {
-        this.channels=channels;
+    public void onChannelChange(JSONObject jObject, String type) {
+        ChannelJSONParser channelJSONParser= new ChannelJSONParser();
+        MyChannelJSONParser mychannelJSONParser= new MyChannelJSONParser();
         sharedpreferences=getSharedPreferences(MyPREFERENCES,
                 Context.MODE_PRIVATE);
         SharedPreferences.Editor editor1 = sharedpreferences.edit();
         Gson gson = new Gson();
-        String jsonchannels = gson.toJson(this.channels);
-        editor1.putString("Channels", jsonchannels);
+        if (type.equals("subscriptions")){
+            this.channels= (ArrayList<Channel>) channelJSONParser.parse(jObject);
+            String jsonchannels = gson.toJson(this.channels);
+            editor1.putString("Channels", jsonchannels);
+        } else if (type.equals("mychannels")){
+            this.mychannels=(ArrayList<MyChannel>) mychannelJSONParser.parse(jObject);
+            String jsonmychannels = gson.toJson(this.mychannels);
+            editor1.putString("MyChannels", jsonmychannels);
+        }
+
         editor1.commit();
 
         try {
