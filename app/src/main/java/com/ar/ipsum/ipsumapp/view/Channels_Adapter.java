@@ -74,7 +74,7 @@ public class Channels_Adapter extends ArrayAdapter<Channel> {
 
             @Override
             public void onClick(View v) {
-                if(!subscribed.isChecked()){
+                if(!channel.getSubscribed()){
                     //Subscrever
 
                     subscribed.setChecked(false);
@@ -108,6 +108,7 @@ public class Channels_Adapter extends ArrayAdapter<Channel> {
 
                     }
                     subscription= array.toString();
+
                     try {
                         object.put("email", user1);
                         object.put("subscriptions", subscription);
@@ -143,6 +144,7 @@ public class Channels_Adapter extends ArrayAdapter<Channel> {
                         object_subs.put("flag", 0);
                         object_subs.put("ContractTerm", 6);
 
+
                     } catch (Exception ex) {
 
                     }
@@ -158,6 +160,7 @@ public class Channels_Adapter extends ArrayAdapter<Channel> {
                     try {
                         object.put("email", user1);
                         object.put("subscriptions", subscription);
+
 
                     } catch (Exception ex) {
 

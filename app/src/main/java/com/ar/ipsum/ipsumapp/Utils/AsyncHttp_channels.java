@@ -16,6 +16,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONObject;
 
@@ -107,8 +108,14 @@ public class AsyncHttp_channels extends AsyncTask<String, String, String> {
             }else if(mMethod.contains("Put")){
                 HttpClient client = new DefaultHttpClient();
                 HttpPost post = new HttpPost(params[0]);
-                post.setEntity(new StringEntity(message, "UTF8"));
-                post.setHeader("Authorization", "Bearer "+token);
+                message= message.replace("\\","");
+                message= message.replace("\"[", "[");
+                message= message.replace("]\"", "]");
+                StringEntity httpEntity= new StringEntity(message, "UTF8");
+                httpEntity.setContentType("application/json");
+                post.setEntity(httpEntity);
+                post.setHeader("Authorization", "Bearer " + token);
+                post.setHeader(HTTP.CONTENT_TYPE, "application/json");
 
                 HttpResponse response = client.execute(post);
 
