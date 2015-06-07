@@ -70,6 +70,7 @@ public class Channels_Adapter extends ArrayAdapter<Channel> {
         }
         subscribed.setChecked(channel.getSubscribed());
 
+
         subscribed.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -77,7 +78,7 @@ public class Channels_Adapter extends ArrayAdapter<Channel> {
                 if(!channel.getSubscribed()){
                     //Subscrever
 
-                    subscribed.setChecked(false);
+                    subscribed.setChecked(true);
                     //request user's credentials
                     String user1=sharedpreferences.getString(name,"");
                     String mToken=sharedpreferences.getString(tokenKey,"");
@@ -124,7 +125,7 @@ public class Channels_Adapter extends ArrayAdapter<Channel> {
                     AsyncHttp_channels asyncHttp_channels = new AsyncHttp_channels(data, context, mMethod, mFlag);
                     asyncHttp_channels.execute("http://ipsumapi.herokuapp.com/api/subscriptions/");
                 }else{
-                    subscribed.setChecked(true);
+                    subscribed.setChecked(false);
                     //request user's credentials
                     String user1=sharedpreferences.getString(name,"");
                     String mToken=sharedpreferences.getString(tokenKey,"");
@@ -141,7 +142,7 @@ public class Channels_Adapter extends ArrayAdapter<Channel> {
 
                         object_subs.put("ChannelId", channel.getId());
                         // unsubscribe the channel
-                        object_subs.put("flag", 0);
+                        object_subs.put("flag", 2);
                         object_subs.put("ContractTerm", 6);
 
 

@@ -8,9 +8,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Spinner;
 
 import com.ar.ipsum.ipsumapp.Resources.Channel;
+import com.firebase.client.Firebase;
+import com.firebase.client.ServerValue;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -23,7 +27,10 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
+import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by QSR on 27-04-2015.
@@ -45,6 +52,11 @@ public class PublishFragment extends Fragment {
     private double longitude= 0.0;
     private ArrayList<Channel> mychannels;
     private Channel  mychannel;
+
+    final String FIREBASEURL="https://glowing-heat-3433.firebaseio.com";
+
+    Firebase myFirebaseRef;
+
 
     Spinner spinner_channel;
 
@@ -83,6 +95,9 @@ public class PublishFragment extends Fragment {
         if (getArguments() != null) {
             latitude = getArguments().getDouble("latitude");
             longitude = getArguments().getDouble("longitude");
+            MainActivity main = (MainActivity) getActivity();
+            Firebase.setAndroidContext(main);
+            myFirebaseRef= new Firebase(FIREBASEURL);
         }
 
 
@@ -97,6 +112,8 @@ public class PublishFragment extends Fragment {
         View view=inflater.inflate(R.layout.fragment_message, container, false);
 
         spinner_channel = (Spinner) view.findViewById(R.id.spinner_channel);
+        final Button publish= (Button) view.findViewById(R.id.button);
+        final EditText body= (EditText) view.findViewById(R.id.body);
 
         sharedpreferences=getActivity().getSharedPreferences(MyPREFERENCES,
                 Context.MODE_PRIVATE);
@@ -181,15 +198,39 @@ public class PublishFragment extends Fragment {
                 // Placing a marker on the touched position
                 googleMap.addMarker(markerOptions);
 
-                latitude= latLng.latitude;
-                longitude= latLng.longitude;
+                latitude = latLng.latitude;
+                longitude = latLng.longitude;
+            }
+        });
+
+        publish.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                String message= body.getText().toString();
+                body.setText("");
+                String channelId="";
+                String channel= spinner_channel.getSelectedItem().toString();
+                for (int i=0; i<mychannels.size();i++){
+                    if(channel.equals(mychannels.get(i).getName())){
+                        channelId=mychannels.get(i).getId();
+                    }
+                }
+                Firebase postRef = myFirebaseRef.child("channels/"+channelId);
+
+                Map<String, String> post1 = new HashMap<String, String>();
+                post1.put("chName", channel);
+                post1.put("content", message);
+                post1.put("date", ServerValue.TIMESTAMP.toString());
+                post1.put("latitude", String.valueOf(latitude));
+                post1.put("longitude", String.valueOf(longitude));
+                postRef.push().setValue(post1);
+
+                // Perform action on click
             }
         });
 
 
         return view;
     }
-
 
 
     @Override
