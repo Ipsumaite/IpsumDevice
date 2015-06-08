@@ -140,10 +140,9 @@ public class Channels_Adapter extends ArrayAdapter<Channel> {
                     JSONObject object_subs = new JSONObject();
                     try {
 
-                        object_subs.put("ChannelId", channel.getId());
+                        object_subs.put("Id", channel.getSubscription().getId());
                         // unsubscribe the channel
                         object_subs.put("flag", 2);
-                        object_subs.put("ContractTerm", 6);
 
 
                     } catch (Exception ex) {
@@ -168,7 +167,7 @@ public class Channels_Adapter extends ArrayAdapter<Channel> {
                     }
                     message = object.toString();
                     data.put("message", message);
-
+                    data.put("email", user1);
                     String mMethod= "Put";
                     int mFlag=0;
                     AsyncHttp_channels asyncHttp_channels = new AsyncHttp_channels(data, context, mMethod, mFlag);

@@ -11,6 +11,8 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
+import android.widget.ListView;
 
 import com.ar.ipsum.ipsumapp.Resources.Channel;
 import com.ar.ipsum.ipsumapp.Utils.AsyncHttp_channels;
@@ -80,6 +82,7 @@ public class ChannelFragment extends ListFragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
     }
 
     @Override
@@ -101,13 +104,48 @@ public class ChannelFragment extends ListFragment {
         /** Setting the list adapter for the ListFragment */
         setListAdapter(adapter);
         View view= inflater.inflate(R.layout.fragment_channel, container, false);
+        final ListView listView= (ListView) view.findViewById(android.R.id.list);
+
         swipe = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh_layout);
         swipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 RefreshChannels();
+
+                new Handler().postDelayed(new Runnable() {
+                                              @Override
+                                              public void run() {
+                                                  swipe.setRefreshing(false);
+                                              }
+                                          }, 3000
+
+                );
+            }
+
+
+        });
+        listView.setOnScrollListener(new AbsListView.OnScrollListener() {
+
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem,
+                                 int visibleItemCount, int totalItemCount) {
+                boolean enable = false;
+                if (listView != null && listView.getChildCount() > 0) {
+                    // check if the first item of the list is visible
+                    boolean firstItemVisible = listView.getFirstVisiblePosition() == 0;
+                    // check if the top of the first item is visible
+                    boolean topOfFirstItemVisible = listView.getChildAt(0).getTop() == 0;
+                    // enabling or disabling the refresh layout
+                    enable = firstItemVisible && topOfFirstItemVisible;
+                }
+                swipe.setEnabled(enable);
             }
         });
+
 
         return view;
     }
@@ -135,14 +173,7 @@ public class ChannelFragment extends ListFragment {
         AsyncHttp_channels asyncHttp_channels = new AsyncHttp_channels(data, getActivity(), mMethod, mFlag);
         asyncHttp_channels.execute("http://ipsumapi.herokuapp.com/api/subscriptions/");
 
-        new Handler().postDelayed(new Runnable() {
-              @Override
-              public void run() {
-                swipe.setRefreshing(false);
-              }
-        },5000
 
-        );
     }
 
 

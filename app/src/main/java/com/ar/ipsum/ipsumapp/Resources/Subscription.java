@@ -34,4 +34,68 @@ public class Subscription {
         this.StartDate=StartDate;
         this.Status=Status;
     }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public int getContractTerm() {
+        return ContractTerm;
+    }
+
+    public void setContractTerm(int contractTerm) {
+        ContractTerm = contractTerm;
+    }
+
+    public String getContractNumber() {
+        return ContractNumber;
+    }
+
+    public void setContractNumber(String contractNumber) {
+        ContractNumber = contractNumber;
+    }
+
+    public String getCreatedDate() {
+        return CreatedDate;
+    }
+
+    public void setCreatedDate(String createdDate) {
+        CreatedDate = createdDate;
+    }
+
+    public String getDescription() {
+        return Description;
+    }
+
+    public void setDescription(String description) {
+        Description = description;
+    }
+
+    public String getEndDate() {
+        return EndDate;
+    }
+
+    public void setEndDate(String endDate) {
+        EndDate = endDate;
+    }
+
+    public String getStartDate() {
+        return StartDate;
+    }
+
+    public void setStartDate(String startDate) {
+        StartDate = startDate;
+    }
+
+    public String getStatus() {
+        return Status;
+    }
+
+    public void setStatus(String status) {
+        Status = status;
+    }
 }
