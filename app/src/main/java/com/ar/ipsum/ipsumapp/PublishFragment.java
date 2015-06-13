@@ -52,6 +52,7 @@ public class PublishFragment extends Fragment {
     private double longitude= 0.0;
     private ArrayList<Channel> mychannels;
     private Channel  mychannel;
+    public static final String id = "idfirebaseKey";;
 
     final String FIREBASEURL="https://glowing-heat-3433.firebaseio.com";
 
@@ -97,7 +98,7 @@ public class PublishFragment extends Fragment {
             longitude = getArguments().getDouble("longitude");
             MainActivity main = (MainActivity) getActivity();
             Firebase.setAndroidContext(main);
-            myFirebaseRef= new Firebase(FIREBASEURL);
+
         }
 
 
@@ -119,6 +120,7 @@ public class PublishFragment extends Fragment {
                 Context.MODE_PRIVATE);
         Gson gson = new Gson();
         String json = sharedpreferences.getString("MyChannels","");
+        String idUser= sharedpreferences.getString(id,"");
         Type type = new TypeToken<ArrayList<Channel>>(){}.getType();
         this.mychannels= gson.fromJson(json, type);
         if (this.mychannels==null){
@@ -134,7 +136,7 @@ public class PublishFragment extends Fragment {
             channel_items[0]= "Empty";
         }
 
-
+        myFirebaseRef= new Firebase(FIREBASEURL+"/channels/"+ idUser);
         adapter1 = new ArrayAdapter<String>(this.getActivity(),
                 android.R.layout.simple_spinner_item, channel_items);
         adapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -214,12 +216,12 @@ public class PublishFragment extends Fragment {
                         channelId=mychannels.get(i).getId();
                     }
                 }
-                Firebase postRef = myFirebaseRef.child("channels/"+channelId);
+                Firebase postRef = myFirebaseRef.child(channelId);
 
-                Map<String, String> post1 = new HashMap<String, String>();
+                Map<String, Object> post1 = new HashMap<String, Object>();
                 post1.put("chName", channel);
                 post1.put("content", message);
-                post1.put("date", ServerValue.TIMESTAMP.toString());
+                post1.put("date", ServerValue.TIMESTAMP);
                 post1.put("latitude", String.valueOf(latitude));
                 post1.put("longitude", String.valueOf(longitude));
                 postRef.push().setValue(post1);
