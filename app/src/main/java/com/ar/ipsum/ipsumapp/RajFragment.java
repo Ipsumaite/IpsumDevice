@@ -240,7 +240,8 @@ public class RajFragment extends RajawaliFragment implements View.OnTouchListene
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 //Executed when progress is changed
-                seekBar
+                float[] new_orientation = new float[3];
+                Orientation =new_orientation;
                 System.out.println(progress);
             }
         };

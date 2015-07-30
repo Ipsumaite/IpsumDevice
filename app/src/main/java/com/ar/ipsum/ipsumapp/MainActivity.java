@@ -163,8 +163,8 @@ public class MainActivity extends Activity implements onChannelsChanged, onOrien
         }
 
         //Initiate orientation class
-        sense= new SensorView(sensors, mCallback1);
-        sense.start();
+        //sense= new SensorView(sensors, mCallback1);
+        //sense.start();
 
         mTitle = mDrawerTitle = getTitle();
 
