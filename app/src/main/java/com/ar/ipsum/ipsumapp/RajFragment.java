@@ -2,6 +2,7 @@ package com.ar.ipsum.ipsumapp;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.graphics.ImageFormat;
 import android.graphics.drawable.ShapeDrawable;
 
@@ -29,6 +30,7 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.ar.ipsum.ipsumapp.Resources.Message;
@@ -223,22 +225,45 @@ public class RajFragment extends RajawaliFragment implements View.OnTouchListene
 
 
 
-        /*RelativeLayout rl = new RelativeLayout(this.getActivity());
-        FloatingActionButton button = new FloatingActionButton(this.getActivity());
+        RelativeLayout rl = new RelativeLayout(this.getActivity());
+        SeekBar sBar = new SeekBar(this.getActivity());
+        SeekBar.OnSeekBarChangeListener abc = new SeekBar.OnSeekBarChangeListener() {
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                //Executed when progress is changed
+                seekBar
+                System.out.println(progress);
+            }
+        };
+        sBar.setMax(2*(int)Math.PI);
+        sBar.setBackgroundColor(Color.WHITE);
+        sBar.setOnSeekBarChangeListener(abc);
+        /*FloatingActionButton button = new FloatingActionButton(this.getActivity());
+
         button.setId(R.id.fab_button);
         button.setBackground(getResources().getDrawable(R.drawable.fab_background));
         button.setElevation((int) getResources().getDimension(R.dimen.fab_elevation));
-        button.setStateListAnimator(AnimatorInflater.loadStateListAnimator(this.getActivity(), R.animator.fab_anim));
+        button.setStateListAnimator(AnimatorInflater.loadStateListAnimator(this.getActivity(), R.animator.fab_anim));*/
         scale = getResources().getDisplayMetrics().density;
         size = (int) getResources().getDimension(R.dimen.fab_size_small);
-        params = new RelativeLayout.LayoutParams(size, size);
+        params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.FILL_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         int gravity = Gravity.BOTTOM | Gravity.RIGHT; // default bottom right
         //params.gravity=gravity;
         params.bottomMargin=21;
         params.rightMargin=21;
-        params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+        //params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
         params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-        ImageView image= new ImageView(this.getActivity());
+        rl.addView(sBar, params);
+        /*ImageView image= new ImageView(this.getActivity());
         image.setImageResource(R.drawable.fab_icons);
         image.setDuplicateParentStateEnabled(true);
         button.addView(image);
@@ -263,7 +288,7 @@ public class RajFragment extends RajawaliFragment implements View.OnTouchListene
 
 
 
-        //mLayout.addView(rl);
+        mLayout.addView(rl);
 
 
         return mLayout;

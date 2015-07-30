@@ -31,6 +31,8 @@ import com.ar.ipsum.ipsumapp.Resources.Message;
 import com.ar.ipsum.ipsumapp.Utils.AsyncHttpGet_credentials;
 import com.ar.ipsum.ipsumapp.Utils.AsyncHttpPost;
 import com.ar.ipsum.ipsumapp.Utils.AsyncHttpPost_presence;
+import com.ar.ipsum.ipsumapp.Utils.ChannelJSONParser;
+import com.ar.ipsum.ipsumapp.Utils.MyChannelJSONParser;
 import com.ar.ipsum.ipsumapp.Utils.onChannelsChanged;
 import com.ar.ipsum.ipsumapp.Utils.onGPSChanged;
 import com.ar.ipsum.ipsumapp.Utils.onObjectSelected;
@@ -57,6 +59,8 @@ import android.hardware.Camera;
 import android.hardware.SensorManager;
 import android.hardware.Camera.CameraInfo;
 import android.hardware.Camera.Size;
+
+import org.json.JSONObject;
 
 
 public class MainActivity extends Activity implements onChannelsChanged, onOrientationChanged,LocationListener, onObjectSelected,
@@ -97,7 +101,7 @@ public class MainActivity extends Activity implements onChannelsChanged, onOrien
     public static final String id = "idfirebaseKey";
     public static final String lat = "latitude";
     public static final String lng = "longitude";
-
+    private ArrayList<MyChannel> mychannels= new ArrayList<MyChannel>();
     private static final String TAG = "LocationActivity";
     private static final long INTERVAL = 1000 * 10;
     private static final long FASTEST_INTERVAL = 1000 * 5;
@@ -188,7 +192,7 @@ public class MainActivity extends Activity implements onChannelsChanged, onOrien
         // Pages
         navDrawerItems.add(new NavDrawerItem(navMenuTitles[4], navMenuIcons.getResourceId(4, -1)));
         // What's hot, We  will add a counter here
-        navDrawerItems.add(new NavDrawerItem(navMenuTitles[5], navMenuIcons.getResourceId(5, -1), true, "50+"));
+        //navDrawerItems.add(new NavDrawerItem(navMenuTitles[5], navMenuIcons.getResourceId(5, -1), true, "50+"));
 
 
         // Recycle the typed array
@@ -312,27 +316,7 @@ public class MainActivity extends Activity implements onChannelsChanged, onOrien
     }
 
 
-    @Override
-    public void onChannelChange(ArrayList<Channel> channels) {
-        this.channels=channels;
-        sharedpreferences=getSharedPreferences(MyPREFERENCES,
-                Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor1 = sharedpreferences.edit();
-        Gson gson = new Gson();
-        String jsonchannels = gson.toJson(this.channels);
-        editor1.putString("Channels", jsonchannels);
-        editor1.commit();
 
-        try {
-            cha.onChannelChange(channels);
-            msg.onChannelChange(channels);
-            pub.onChannelChange(channels);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-
-    }
 
     @Override
     public void onOrientaionChange(float[] orientation) {
@@ -371,6 +355,13 @@ public class MainActivity extends Activity implements onChannelsChanged, onOrien
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
         this.menu=menu;
+        sharedpreferences=getSharedPreferences(MyPREFERENCES,
+                Context.MODE_PRIVATE);
+        String status=sharedpreferences.getString("state","");
+        if (status.equals("Authenticated") || status.equals("Registered")){
+            String user=sharedpreferences.getString(name,"User Not Logged In");
+            updateMenu(user);
+        }
         return true;
     }
 
@@ -432,13 +423,13 @@ public class MainActivity extends Activity implements onChannelsChanged, onOrien
             case 3:
                 fragment = new LoginFragment();
                 break;
-            case 4:
+            /*case 4:
                 fragment = new MessageFragment();
                 msg= (MessageFragment) fragment;
                 args.putDouble(lat, latitude);
                 args.putDouble(lng, longitude);
                 msg.setArguments(args);
-                break;
+                break;*/
 
              /*case 5:
                 fragment = new WhatsHotFragment();
@@ -587,7 +578,36 @@ public class MainActivity extends Activity implements onChannelsChanged, onOrien
         return c; // returns null if camera is unavailable
     }
 
+    @Override
+    public void onChannelChange(JSONObject jObject, String type) {
+        ChannelJSONParser channelJSONParser= new ChannelJSONParser();
+        MyChannelJSONParser mychannelJSONParser= new MyChannelJSONParser();
+        sharedpreferences=getSharedPreferences(MyPREFERENCES,
+                Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor1 = sharedpreferences.edit();
+        Gson gson = new Gson();
+        if (type.equals("subscriptions")){
+            this.channels= (ArrayList<Channel>) channelJSONParser.parse(jObject);
+            String jsonchannels = gson.toJson(this.channels);
+            editor1.putString("Channels", jsonchannels);
+        } else if (type.equals("mychannels")){
+            this.mychannels=(ArrayList<MyChannel>) mychannelJSONParser.parse(jObject);
+            String jsonmychannels = gson.toJson(this.mychannels);
+            editor1.putString("MyChannels", jsonmychannels);
+        }
 
+        editor1.commit();
+
+        try {
+            cha.onChannelChange(channels);
+            msg.onChannelChange(channels);
+            pub.onChannelChange(channels);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+    }
 
 
 }

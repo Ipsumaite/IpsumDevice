@@ -16,7 +16,6 @@
         <item >Publish</item>
         <item >Channels</item>
         <item >Login</item>
-        <item >WriteMessage</item>
         <item >Preferences</item>
     </string-array>
 
