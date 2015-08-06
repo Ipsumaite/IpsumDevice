@@ -112,6 +112,7 @@ public class RajFragment extends RajawaliFragment implements View.OnTouchListene
 
     private Camera camera;
     private ArDisplayView arDisplay;
+    TextView dir;
 
 
     @Override
@@ -202,14 +203,14 @@ public class RajFragment extends RajawaliFragment implements View.OnTouchListene
 
 
         int size2 =0;
-        RelativeLayout.LayoutParams params;
+        RelativeLayout.LayoutParams params, params1;
         int size = 0;
         float scale = 0;
         size2 = (int) getResources().getDimension(R.dimen.message_board_size);
 
-
+        dir= new TextView(this.getActivity());
         params = new RelativeLayout.LayoutParams(size, size);
-
+        params1 = new RelativeLayout.LayoutParams(size, size);
         mLayout.addView(mSurfaceView);
         mLayout.addView(mSurfaceView1);
 
@@ -225,6 +226,7 @@ public class RajFragment extends RajawaliFragment implements View.OnTouchListene
 
 
 
+        dir.setText("N");
         RelativeLayout rl = new RelativeLayout(this.getActivity());
         SeekBar sBar = new SeekBar(this.getActivity());
         SeekBar.OnSeekBarChangeListener abc = new SeekBar.OnSeekBarChangeListener() {
@@ -235,19 +237,50 @@ public class RajFragment extends RajawaliFragment implements View.OnTouchListene
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
+                float[] new_orientation = new float[3];
+                new_orientation[0]=(float)Math.toRadians((0));
+                new_orientation[1]=0.20465456f;
+                new_orientation[2]=0;
+                Orientation =new_orientation;
+                onOrientaionChange(new_orientation);
             }
 
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 //Executed when progress is changed
                 float[] new_orientation = new float[3];
-                Orientation =new_orientation;
+                new_orientation[0]=(float)Math.toRadians((progress-180));
+                new_orientation[1]=0.20465456f;
+                new_orientation[2]=0;
+                //Orientation =new_orientation;
+                onOrientaionChange(new_orientation);
                 System.out.println(progress);
+                if(progress<22.5) {
+                    dir.setText("S");
+                } else if(progress<67.5) {
+                    dir.setText("SW");
+                }else if(progress<112.5) {
+                    dir.setText("W");
+                }else if(progress<157.5) {
+                    dir.setText("NW");
+                }else if(progress<202.5) {
+                    dir.setText("N");
+                }else if(progress<247.5) {
+                    dir.setText("NE");
+                }else if(progress<292.5) {
+                    dir.setText("E");
+                }else if(progress<337.5) {
+                    dir.setText("SE");
+                }else if(progress<360) {
+                    dir.setText("S");
+                }
             }
         };
-        sBar.setMax(2*(int)Math.PI);
+        sBar.setMax(360);
+        sBar.setProgress(180);
         sBar.setBackgroundColor(Color.WHITE);
         sBar.setOnSeekBarChangeListener(abc);
+
         /*FloatingActionButton button = new FloatingActionButton(this.getActivity());
 
         button.setId(R.id.fab_button);
@@ -257,6 +290,7 @@ public class RajFragment extends RajawaliFragment implements View.OnTouchListene
         scale = getResources().getDisplayMetrics().density;
         size = (int) getResources().getDimension(R.dimen.fab_size_small);
         params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.FILL_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        params1 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         int gravity = Gravity.BOTTOM | Gravity.RIGHT; // default bottom right
         //params.gravity=gravity;
         params.bottomMargin=21;
@@ -264,6 +298,7 @@ public class RajFragment extends RajawaliFragment implements View.OnTouchListene
         //params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
         params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
         rl.addView(sBar, params);
+        rl.addView(dir, params);
         /*ImageView image= new ImageView(this.getActivity());
         image.setImageResource(R.drawable.fab_icons);
         image.setDuplicateParentStateEnabled(true);
